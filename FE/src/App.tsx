@@ -1,4 +1,4 @@
-import { JoinRoom } from "./components/JoinRoom";
+import JoinRoom from "./components/JoinRoom";
 import { CreateRoom } from "./components/CreateRoom"
 import { Room } from "./components/Room";
 import { NotFound } from "./components/NotFound";
@@ -7,11 +7,6 @@ import uniqid from 'uniqid'
 
 function App() {
 
-
-  const joinRoom = (roomCode: string) => {
-    //TODO: switch to room page
-    console.log(`App.tsx: ${roomCode}`)
-  }
 
   const createRoom = () => {
     //TODO: get all current rooms from db
@@ -27,15 +22,15 @@ function App() {
           <Route exact path='/' render={() => (
             <>
               <CreateRoom createRoom={ createRoom }/>
-              <JoinRoom joinRoom={ joinRoom }/>
+              <JoinRoom/>
             </>
           )} />
-          <Route exact path='/:id' render={() => (
+          <Route exact path='/room/:id' render={() => (
             <>
               <Room />
             </>
           )} />
-          <Route component={NotFound} />
+          <Route exact path ='/notfound' component={NotFound} />
           </Switch>
         </Router>
 
