@@ -10,7 +10,17 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/addRoom', function(req, res, next) {
-  
+  const room = new Room({
+      id: req.body.id,
+      owner_id: req.body.owner_id,
+  });
+  room.save((err, res) => {
+      if(err){
+          console.log(err)
+      }else{
+          res.send(res)
+      }
+    })
 });
 
 module.exports = router;
