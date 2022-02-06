@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import {useHistory} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export default function JoinRoom(){
 	const [RoomCode, setRoomCode] = useState<string>('')
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const rooms: string[] = ['abcd', 'ecbd', 'shsh']
 
@@ -13,9 +13,9 @@ export default function JoinRoom(){
 		//TODO: switch to room page
 		console.log(`App.tsx: ${roomCode}`)
 		if(!rooms.includes(roomCode)){
-			history.push('/notfound')
+			navigate('/notfound')
 		}else{
-			history.push(`/room/${roomCode}`);
+			navigate(`/room/${roomCode}`);
 		}
 	}
 
