@@ -19,12 +19,15 @@ export const Login = () => {
   const loginCallback = (
     userInfo: ReactFacebookLoginInfo | ReactFacebookFailureResponse
   ) => {
+	  console.log("inside login callback")
     const res = loginUser({
       userID: (userInfo as ReactFacebookLoginInfo).userID!!,
       email: (userInfo as ReactFacebookLoginInfo).email!!,
       name: (userInfo as ReactFacebookLoginInfo).name!!,
       picture: (userInfo as ReactFacebookLoginInfo).picture?.data.url!!,
     });
+
+	  console.log(login)
 
 	login(res as UserRes)
 	//TODO: make async
