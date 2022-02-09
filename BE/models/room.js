@@ -11,9 +11,6 @@ const roomSchema = new Schema({
 		type: String,
 		required: true
 	},
-	started_at: {
-		type: String,
-	},
 	expires_at: {
 		type: String
 	}
