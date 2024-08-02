@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Mafia",
+    "description": ""
+  },
+  {
+    "id": 2,
+    "name": "Villager",
+    "description": ""
+  },
+  {
+    "id": 3,
+    "name": "Detective",
+    "description": ""
+  },
+  {
+    "id": 4,
+    "name": "Doctor",
+    "description": ""
+  }
+]
