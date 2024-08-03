@@ -2,21 +2,21 @@
   {
     "id": 1,
     "name": "Mafia",
-    "description": ""
+    "description": "Kills everyone"
   },
   {
     "id": 2,
     "name": "Villager",
-    "description": ""
+    "description": "Only can talk"
   },
   {
     "id": 3,
     "name": "Detective",
-    "description": ""
+    "description": "Can see roles of other players"
   },
   {
     "id": 4,
     "name": "Doctor",
-    "description": ""
+    "description": "Can save one pearson per turn"
   }
 ]
