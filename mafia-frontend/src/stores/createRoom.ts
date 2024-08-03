@@ -1,26 +1,42 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-interface Roles {
+export interface Role {
   id: number,
-  name: string,
-  description: string
+  count: number
 }
 
 export const useCreateRoom = defineStore('createRoom', () => {
-  const choosenRoles = ref<number[]>([])
+  const choosenRoles = ref<Role[]>([])
 
-  function addRolesToArray(id: number): void {
-    const index = choosenRoles.value.indexOf(id);
-    if (index !== -1) {
-      choosenRoles.value.splice(index, 1); // Remove the element
-    } else {
-      choosenRoles.value.push(id);
+  const allRolesCounted = ref<number>(0)
+
+  function addRolesToArray(id: number, add: boolean): void {
+    if (choosenRoles.value !== undefined) {
+      const foundRole = choosenRoles.value.find(val => val.id === id);
+      if (foundRole) {
+        if(add === true) {
+          foundRole.count++;
+          allRolesCounted.value++
+        } else {
+          if(foundRole.count === 0) {
+            foundRole.count = 0;
+            allRolesCounted.value = 0;
+          } else {
+            foundRole.count -= 1;
+            allRolesCounted.value--
+          }
+        }
+      } else {
+        choosenRoles.value.push({ id, count: add ? 1 : 0 });
+      } 
     }
+    console.log(allRolesCounted.value)
   }
 
   return { 
     choosenRoles,
+    allRolesCounted,
     addRolesToArray
   }
 })
