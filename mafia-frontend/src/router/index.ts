@@ -3,6 +3,7 @@ import HomeView from '../views/Home.vue'
 import JoinRoom from '@/views/JoinRoom/JoinRoom.vue'
 import CreateRoom from '@/views/CreateRoom/CreateRoom.vue'
 import PlayRoom from '@/views/PlayRoom/PlayRoom.vue'
+import LobbyRoom from '@/views/CreateRoom/LobbyRoom.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/PlayRoom',
       name: 'PlayRoom',
       component: PlayRoom
+    },
+    {
+      path: '/LobbyRoom',
+      name: 'LobbyRoom',
+      component: LobbyRoom
     }
   ]
 })

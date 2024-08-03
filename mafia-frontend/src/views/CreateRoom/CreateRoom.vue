@@ -5,11 +5,11 @@ import { useCreateRoom } from '@/stores/createRoom'
 const createRoom = useCreateRoom()
 
 async function startGame(): Promise<void> {
-  if(createRoom.choosenRoles.length < 3) {
-    alert("Please add more than 2 roles")
-    return;
+  if (createRoom.choosenRoles.length < 3) {
+    alert('Please add more than 2 roles')
+    return
   }
-  console.log("Started the game")
+  console.log('Started the game')
 }
 </script>
 
@@ -30,7 +30,13 @@ async function startGame(): Promise<void> {
       </div>
     </div>
     <div class="row center">
-      <div class="column"><button @click="startGame" type="button" class="btn btn-primary">Start game</button></div>
+      <div class="column">
+        <router-link to="/LobbyRoom"
+          ><button @click="startGame" type="button" class="btn btn-primary">
+            Start game
+          </button></router-link
+        >
+      </div>
     </div>
   </main>
 </template>
