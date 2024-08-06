@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const roomManager = require('../helpers/roomManagement.js');
+const roomManagement = require('../helpers/roomManagement.js');
 
 router.get('/createRoom', function (req, res, next) {
     const roomId = roomManager.createRoom()
@@ -9,8 +10,6 @@ router.get('/createRoom', function (req, res, next) {
 
 router.post('/checkRoom', function (req, res, next) {
     const { roomId, username } = req.body
-    console.log(roomId)
-    console.log(username)
     if (!roomId || !username) {
         return res.status(400).send('Room ID and username are required')
     }
@@ -24,5 +23,36 @@ router.post('/checkRoom', function (req, res, next) {
         res.status(404).send('Room not found')
     }
 })
+
+
+router.post('/startGame', function (req, res, next) {
+    const { roomId, roles } = req.body
+    if (!roomId || !roles) {
+        return res.status(400).send('Room ID and roles are required')
+    }
+    const room = roomManager.getRoom(roomId)
+    if (!room) {
+        return res.status(404).send('Room not found')
+    }
+
+    console.log(roles.length)
+    if (roles.length !== roomManagement.getRoomSize(roomId)) {
+        return res.status(404).send('Number of roles is not the same as number of players')
+    }
+
+    const shuffledRoles = roomManagement.shuffleArray(roles)
+    console.log(roles)
+    console.log(shuffledRoles)
+    let i = 0;
+    room.forEach((socket, username) => {
+        const role = shuffledRoles[i++]
+        socket.send(JSON.stringify({ "status": "role", "role": role }))
+    });
+
+    res.send('Roles assigned and sent to players')
+    
+
+})
+
 
 module.exports = router;
