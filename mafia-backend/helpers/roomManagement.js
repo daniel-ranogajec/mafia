@@ -8,7 +8,7 @@ class RoomManager {
         do {
             roomId = Math.floor(100000 + Math.random() * 900000).toString()
         } while (this.rooms.has(roomId))
-        return "1234"
+        return roomId
     }
 
     createRoom() {

@@ -24,7 +24,8 @@ class WebSocketServer {
 
             this.broadcast(JSON.stringify({"status": "user_connected", "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)
 
-            socket.send(JSON.stringify({"status": "connected", "players": roomManagement.getRoomSize(connectionParams.room_id)}))
+            const players = Array.from(roomManagement.getRoom(connectionParams.room_id).keys())
+            socket.send(JSON.stringify({"status": "connected", "players": players}))
 
             socket.on('close', () => {
                 roomManagement.removeClientFromRoom(connectionParams.room_id, connectionParams.username)
