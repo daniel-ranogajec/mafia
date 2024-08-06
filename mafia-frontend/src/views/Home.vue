@@ -1,4 +1,23 @@
 <script setup lang="ts">
+import axios from 'axios';
+
+import { useCreateRoom } from '@/stores/createRoom';
+import { useRouter } from 'vue-router';
+
+const createRoom = useCreateRoom();
+const router = useRouter()
+
+function callCreateRoom() {
+  axios.get('http://localhost:8000/createRoom').then(res => {
+    if (res.data.roomId !== undefined) {
+      createRoom.room = res.data;
+      router.push({
+        path: `/CreateRoom/${res.data.roomId}`}
+      )
+    }
+  }).catch(err => new Error(err))
+
+}
 
 </script>
 
@@ -10,9 +29,7 @@
       </div>
 
       <div class="row m-3 mt-0">
-        <router-link to="/CreateRoom">
-          <button type="button" class="btn btn-primary">Create room</button>
-        </router-link>
+        <button type="button" @click="callCreateRoom" class="btn btn-primary">Create room</button>
       </div>
 
       <div class="row m-3 mt-0">

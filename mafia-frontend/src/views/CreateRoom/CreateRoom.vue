@@ -3,20 +3,21 @@ import roles from '@/assets/roles.json'
 import { useCreateRoom } from '@/stores/createRoom'
 import { ref } from 'vue'
 import { useLobbyRoom } from '@/stores/lobbyRoom'
+import { useRouter, useRoute } from 'vue-router'
 
-const lobbyRoom = useLobbyRoom()
-
+const router = useRouter()
+const route = useRoute()
 const createRoom = useCreateRoom()
-
-const canGoNext = ref<boolean>(false)
 
 async function startGame(): Promise<void> {
   if (createRoom.choosenRoles.length < 3) {
     alert('Please add more than 2 roles')
-    canGoNext.value = false
     return
   } else {
-    canGoNext.value = true
+    const id = route.params.id.toString()
+    router.push({
+      path: `/LobbyRoom/${id}`
+    })
   }
 }
 </script>
@@ -24,12 +25,20 @@ async function startGame(): Promise<void> {
 <template>
   <main>
     <div class="borderRole">
-      Players joined: {{ lobbyRoom.players.length }}
+      <div class="row">
+        <h1 class="col">Room id: {{ route.params.id }}</h1>
+      </div>
     </div>
+    <hr />
     <div v-for="role in roles" v-bind:key="role.id">
       <div
-        :class="[createRoom.choosenRoles.find(val => val.id === role.id) === undefined ? 'borderRole' : 'choosenRole',
-          createRoom.choosenRoles.find(val => val.id === role.id)?.count === 0 ? 'borderRole' : 'choosenRole'
+        :class="[
+          createRoom.choosenRoles.find((val) => val.id === role.id) === undefined
+            ? 'borderRole'
+            : 'choosenRole',
+          createRoom.choosenRoles.find((val) => val.id === role.id)?.count === 0
+            ? 'borderRole'
+            : 'choosenRole'
         ]"
         class="card container m-y-15 border"
       >
@@ -39,8 +48,13 @@ async function startGame(): Promise<void> {
         <div class="row p-1 center">
           <div class="col">
             <span class="counter m-3" @click="createRoom.addRolesToArray(role.id, true)">+</span>
-            <span class="counter m-3">{{ createRoom.choosenRoles.find(val => val.id === role.id)?.count ? createRoom.choosenRoles.find(val => val.id === role.id)?.count : 0  }}</span>
-            <span class="counter m-3" @click="createRoom.addRolesToArray(role.id, false)">-</span></div>
+            <span class="counter m-3">{{
+              createRoom.choosenRoles.find((val) => val.id === role.id)?.count
+                ? createRoom.choosenRoles.find((val) => val.id === role.id)?.count
+                : 0
+            }}</span>
+            <span class="counter m-3" @click="createRoom.addRolesToArray(role.id, false)">-</span>
+          </div>
         </div>
         <div class="row p-1 center">
           <div class="col-12">{{ role.description }}</div>
@@ -49,11 +63,7 @@ async function startGame(): Promise<void> {
     </div>
     <div class="row center">
       <div class="column" v-if="createRoom.allRolesCounted >= 3">
-        <router-link to="/LobbyRoom"
-          ><button @click="startGame" type="button" class="btn btn-primary">
-            Start game
-          </button></router-link
-        >
+        <button @click="startGame" type="button" class="btn btn-primary">Start game</button>
       </div>
     </div>
   </main>

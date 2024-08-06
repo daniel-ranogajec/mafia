@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import roles from '@/assets/roles.json'
 import { useLobbyRoom } from '@/stores/lobbyRoom'
 
 const lobbyRoom = useLobbyRoom()

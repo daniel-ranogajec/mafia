@@ -7,6 +7,8 @@ export interface Role {
 }
 
 export const useCreateRoom = defineStore('createRoom', () => {
+  const room = ref<object>({})
+
   const choosenRoles = ref<Role[]>([])
 
   const allRolesCounted = ref<number>(0)
@@ -31,12 +33,12 @@ export const useCreateRoom = defineStore('createRoom', () => {
         choosenRoles.value.push({ id, count: add ? 1 : 0 });
       } 
     }
-    console.log(allRolesCounted.value)
   }
 
   return { 
     choosenRoles,
     allRolesCounted,
+    room,
     addRolesToArray
   }
 })
