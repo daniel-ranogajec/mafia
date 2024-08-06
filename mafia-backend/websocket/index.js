@@ -1,6 +1,7 @@
 const WebSocket = require('ws')
 const querystring = require('node:querystring')
 const roomManagement = require('../helpers/roomManagement')
+const { log } = require('node:console')
 
 class WebSocketServer {
     constructor() {
@@ -18,17 +19,31 @@ class WebSocketServer {
                 return
             }
 
+
             roomManagement.addClientToRoom(connectionParams.room_id, connectionParams.username, socket)
 
+            this.broadcast(JSON.stringify({"status": "user_connected", "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)
+
+            socket.send(JSON.stringify({"status": "connected", "players": roomManagement.getRoomSize(connectionParams.room_id)}))
+
             socket.on('close', () => {
-                roomManagement.removeClientFromRoom(connectionParams.room_id, connectionParams.username);
-                console.log('Client disconnected')
+                roomManagement.removeClientFromRoom(connectionParams.room_id, connectionParams.username)
+                
+                this.broadcast(JSON.stringify({"status": "user_disconnected", "user": connectionParams.username}), connectionParams.room_id)
             })
         })
     }
 
-    broadcast(message, sender, roomId) {
-        roomManagement.broadcast(message, sender, roomId);
+    broadcast(message, roomId, username = undefined) {        
+        let room = roomManagement.getRoom(roomId)
+        if (room === undefined) {
+            return
+        }
+        room.forEach((socket, userID) => {
+            if (userID !== username && socket.readyState === WebSocket.OPEN) {
+                socket.send(message);
+            }
+        });
     }
 }
 

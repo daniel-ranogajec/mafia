@@ -8,7 +8,7 @@ class RoomManager {
         do {
             roomId = Math.floor(100000 + Math.random() * 900000).toString()
         } while (this.rooms.has(roomId))
-        return roomId
+        return "1234"
     }
 
     createRoom() {
@@ -18,7 +18,7 @@ class RoomManager {
     }
 
     getRoom(roomId) {
-        return this.rooms.get(roomId) || null
+        return this.rooms.get(roomId) || undefined
     }
 
     deleteRoom(roomId) {
@@ -46,6 +46,14 @@ class RoomManager {
                 this.rooms.delete(roomId)
             }
         }
+    }
+
+    getRoomSize(roomId) {
+        const clients = this.rooms.get(roomId)
+        if (clients) {
+            return clients.size
+        }
+        return 0
     }
 }
 
