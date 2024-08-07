@@ -3,8 +3,9 @@ import { defineStore } from 'pinia'
 
 export const useWebsocket = defineStore('websocket', () => {
   const messages = ref<string>('')
-
-  const userName = ref<string>('')
+  
+  const uname = localStorage.getItem("username")
+  const userName = ref<string>( uname ? uname : "")
   const roomId = ref<string>('')
 
   const players = ref<string[]>([])
@@ -13,6 +14,10 @@ export const useWebsocket = defineStore('websocket', () => {
 
   function joinNewSocket() {
     if (!socket.value) {
+      if (userName.value == "") {
+        return
+      }
+      localStorage.setItem("username", userName.value)
       socket.value = new WebSocket(
         `ws://localhost:8000?username=${userName.value}&room_id=${roomId.value}`
       )

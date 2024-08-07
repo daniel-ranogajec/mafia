@@ -19,6 +19,9 @@ const players = computed<any>(() => {
   }
 })
 
+ws.roomId = route.params.id.toString()
+ws.joinNewSocket()
+
 async function startGame(): Promise<void> {
   if (createRoom.choosenRoles.length < 2) {
     alert('Please add more than 1 role')
@@ -32,8 +35,6 @@ async function startGame(): Promise<void> {
     }, [])
     axios.post('http://localhost:8000/startGame', { roomId: route.params.id.toString(), roles: roles }).then(res => { console.log(res) }).catch(err => new Error(err))
 
-    const id = route.params.id.toString()
-    ws.roomId = id
     /*router.push({
       path: `/LobbyRoom/${id}`
     })*/

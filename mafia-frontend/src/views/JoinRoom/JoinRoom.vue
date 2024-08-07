@@ -11,9 +11,6 @@ const gamePin = ref<string>("")
 
 function joinGame() {
   axios.post('http://localhost:8000/checkRoom', { roomId: gamePin.value, username: ws.userName }).then(res => {
-    ws.roomId = res.data.roomId
-    
-    ws.joinNewSocket()
     router.push({
       path: `/LobbyRoom/${res.data.roomId}`}
     )

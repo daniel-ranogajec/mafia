@@ -13,8 +13,6 @@ function callCreateRoom() {
   axios.get('http://localhost:8000/createRoom').then(res => {
     if (res.data.roomId !== undefined) {
       createRoom.room = res.data;
-      ws.roomId = res.data.roomId
-      ws.joinNewSocket()
       router.push({
         path: `/CreateRoom/${res.data.roomId}`}
       )
