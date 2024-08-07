@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export interface Role {
-  id: number,
+  name: string,
   count: number
 }
 
@@ -13,9 +13,9 @@ export const useCreateRoom = defineStore('createRoom', () => {
 
   const allRolesCounted = ref<number>(0)
 
-  function addRolesToArray(id: number, add: boolean): void {
+  function addRolesToArray(name: string, add: boolean): void {
     if (choosenRoles.value !== undefined) {
-      const foundRole = choosenRoles.value.find(val => val.id === id);
+      const foundRole = choosenRoles.value.find(val => val.name === name);
       if (foundRole) {
         if(add === true) {
           foundRole.count++;
@@ -30,7 +30,7 @@ export const useCreateRoom = defineStore('createRoom', () => {
           }
         }
       } else {
-        choosenRoles.value.push({ id, count: add ? 1 : 0 });
+        choosenRoles.value.push({ name, count: add ? 1 : 0 });
       } 
     }
   }
