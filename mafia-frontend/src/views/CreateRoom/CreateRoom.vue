@@ -35,9 +35,9 @@ async function startGame(): Promise<void> {
     }, [])
     axios.post('http://localhost:8000/startGame', { roomId: route.params.id.toString(), roles: roles }).then(res => { console.log(res) }).catch(err => new Error(err))
 
-    /*router.push({
-      path: `/LobbyRoom/${id}`
-    })*/
+    router.push({
+      path: `/PlayRoom/${route.params.id.toString()}`
+    })
   }
 }
 </script>

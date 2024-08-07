@@ -39,8 +39,10 @@ export const useWebsocket = defineStore('websocket', () => {
             } else {
               players.value.push(message.user)
             }
-          } else {
+          } else if (message.status === 'user_disconnected') {
             removePlayer(message.user);
+          } else if (message.status === 'role') {
+            localStorage.setItem("role", message.role)
           }
         } catch (parseError) {
           console.error('Error parsing WebSocket message:', parseError)

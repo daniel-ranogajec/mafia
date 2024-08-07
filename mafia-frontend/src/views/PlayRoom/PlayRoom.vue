@@ -1,13 +1,22 @@
 <script setup lang="ts">
 
-import Websocket from '@/services/Websocket.ts'
+import Swal from 'sweetalert2'
 
-Websocket.connect()
-
+const role = localStorage.getItem("role")
+fireAlert()
+function fireAlert() {
+    Swal.fire({
+        title: "Psssst... Your role is:",
+        text: role,
+        confirmButtonText: 'Cool'
+    })
+}
 </script>
 
 <template>
-    <div class="container">
-       
-    </div>
+    <main>
+        <div class="container">
+            <i class="fa fa-info-circle" @click="fireAlert"></i>
+        </div>
+    </main>
 </template>
