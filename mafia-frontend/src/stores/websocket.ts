@@ -39,7 +39,7 @@ export const useWebsocket = defineStore('websocket', () => {
             } else {
               players.value.push(message.user)
             }
-          } else if (message.status === 'user_disconnected') {
+          } else if (message.status === 'user_disconnected' ){
             removePlayer(message.user);
           } else if (message.status === 'role') {
             localStorage.setItem("role", message.role)
