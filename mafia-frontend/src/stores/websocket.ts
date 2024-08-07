@@ -39,7 +39,7 @@ export const useWebsocket = defineStore('websocket', () => {
             } else {
               players.value.push(message.user)
             }
-          } else {
+          } else if (message.status === 'user_disconnected' ){
             removePlayer(message.user);
           }
         } catch (parseError) {

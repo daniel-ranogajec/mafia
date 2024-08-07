@@ -11,20 +11,12 @@ const route = useRoute()
 const createRoom = useCreateRoom()
 const ws = useWebsocket()
 
-const players = computed<any>(() => {
-  if (ws) {
-    return ws.messages
-  } else {
-    return "Nothing"
-  }
-})
-
 ws.roomId = route.params.id.toString()
 ws.joinNewSocket()
 
 async function startGame(): Promise<void> {
-  if (createRoom.choosenRoles.length < 2) {
-    alert('Please add more than 1 role')
+  if (createRoom.choosenRoles.length !== ws.players.length) {
+    alert('Not enough roles as players')
     return
   } else {
     let roles = createRoom.choosenRoles.reduce((acc, role) => {
@@ -47,6 +39,9 @@ async function startGame(): Promise<void> {
     <div class="borderRole">
       <div class="row">
         <h1 class="col">Room id: {{ route.params.id }}</h1>
+      </div>
+      <div class="row">
+        <h1 class="col">Player count: {{ ws.players.length }}</h1>
       </div>
     </div>
     <hr />

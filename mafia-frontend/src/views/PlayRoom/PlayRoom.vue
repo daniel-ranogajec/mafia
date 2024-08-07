@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { useWebsocket } from '@/stores/websocket';
 
-import Websocket from '@/services/Websocket.ts'
 
-Websocket.connect()
 
 </script>
 
