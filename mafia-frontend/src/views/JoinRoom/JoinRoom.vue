@@ -2,23 +2,22 @@
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios';
+import { useWebsocket } from '@/stores/websocket';
 
 const router = useRouter()
-const route = useRoute()
+const ws = useWebsocket()
 
 const gamePin = ref<string>("")
 
 function joinGame() {
-  axios.post('http://localhost:8000/checkRoom', { "roomId": gamePin.value, "username": "1234" }).then(res => {
-    console.log(res)
+  axios.post('http://localhost:8000/checkRoom', { roomId: gamePin.value, username: ws.userName }).then(res => {
+    ws.roomId = res.data.roomId
+    
+    ws.joinNewSocket()
     router.push({
-      path: `/JoinRoom/${res.data.roomId}`}
+      path: `/LobbyRoom/${res.data.roomId}`}
     )
   }).catch(err => new Error(err))
-
-  router.push({
-    path: `/LobbyRoom/${gamePin.value}`
-  })
 }
 </script>
 

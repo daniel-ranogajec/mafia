@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { useLobbyRoom } from '@/stores/lobbyRoom'
+import { useWebsocket } from '@/stores/websocket';
+import { computed } from 'vue';
 
 const lobbyRoom = useLobbyRoom()
+const ws = useWebsocket()
 
+const players = computed<any>(() => {
+  if(ws.players) {
+    return ws.players
+  } else {
+    return "Nothing"
+  }
+})
+
+console.log(ws.players, players.value)
 
 </script>
 
 <template>
   <main>
-    <div class="container" v-for="player in lobbyRoom.players" v-bind:key="player.id">
+    <div class="container" v-for="player in ws.players" v-bind:key="player">
         <div class="row center card borderRole m-y-15">
-            <div class="col">{{ player.name }}</div>
+            <div class="col">{{ player }}</div>
         </div>
     </div>
   </main>

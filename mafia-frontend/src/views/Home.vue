@@ -3,14 +3,18 @@ import axios from 'axios';
 
 import { useCreateRoom } from '@/stores/createRoom';
 import { useRouter } from 'vue-router';
+import { useWebsocket } from '@/stores/websocket';
 
 const createRoom = useCreateRoom();
 const router = useRouter()
+const ws = useWebsocket()
 
 function callCreateRoom() {
   axios.get('http://localhost:8000/createRoom').then(res => {
     if (res.data.roomId !== undefined) {
       createRoom.room = res.data;
+      ws.roomId = res.data.roomId
+      ws.joinNewSocket()
       router.push({
         path: `/CreateRoom/${res.data.roomId}`}
       )
@@ -25,7 +29,7 @@ function callCreateRoom() {
   <main>
     <div class="container">
       <div class="row m-3 mb-3">
-        <input type="text" class="form-control" placeholder="Enter your name" />
+        <input type="text" v-model="ws.userName" class="form-control" placeholder="Enter your name" />
       </div>
 
       <div class="row m-3 mt-0">

@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import roles from '@/assets/roles.json'
 import { useCreateRoom } from '@/stores/createRoom'
-import { ref } from 'vue'
-import { useLobbyRoom } from '@/stores/lobbyRoom'
+import { useWebsocket } from '@/stores/websocket';
+import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 const createRoom = useCreateRoom()
+const ws = useWebsocket()
+
+const players = computed<any>(() => {
+  if(ws) {
+    return ws.messages
+  } else {
+    return "Nothing"
+  }
+})
 
 async function startGame(): Promise<void> {
   if (createRoom.choosenRoles.length < 3) {
@@ -15,6 +24,7 @@ async function startGame(): Promise<void> {
     return
   } else {
     const id = route.params.id.toString()
+    ws.roomId = id
     router.push({
       path: `/LobbyRoom/${id}`
     })
