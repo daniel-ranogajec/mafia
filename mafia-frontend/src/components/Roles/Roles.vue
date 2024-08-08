@@ -14,9 +14,9 @@ interface Props {
   buttonText: {
     type: String
     default: 'Ok'
-  },
-  closeButton : {
-    type: String,
+  }
+  closeButton: {
+    type: String
     default: 'Close'
   }
 }
@@ -30,7 +30,6 @@ function fireAlert() {
     confirmButtonText: props.closeButton
   })
 }
-
 </script>
 
 <template>

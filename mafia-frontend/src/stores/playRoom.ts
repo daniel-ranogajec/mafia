@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useWebsocket } from './websocket'
 
 export enum CurrentGameScreen {
   NIGHT,
@@ -8,8 +9,25 @@ export enum CurrentGameScreen {
   VOTING
 }
 
+export interface ChoosenPlayer {
+  name: string,
+  choosenPlayer?: string,
+}
+
 export const usePlayRoom = defineStore('playRoom', () => {
+  const ws = useWebsocket()
+
+  const players = ref<ChoosenPlayer[]>([])
+  const choosenPlayer = ref<ChoosenPlayer | null>(null)
+
   const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
+
+  function initialize() {
+    players.value = []
+    ws.players.map((val) => {
+      players.value.push({ name: val })
+    })
+  }
 
   function nextCycle() {
     if(currentScreen.value === CurrentGameScreen.NIGHT){
@@ -28,6 +46,9 @@ export const usePlayRoom = defineStore('playRoom', () => {
 
   return { 
     currentScreen,
-    nextCycle
+    nextCycle,
+    players,
+    choosenPlayer,
+    initialize
   }
 })

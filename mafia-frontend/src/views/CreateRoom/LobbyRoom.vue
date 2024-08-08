@@ -1,20 +1,8 @@
 <script setup lang="ts">
 import { useWebsocket } from '@/stores/websocket';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 const ws = useWebsocket()
-const route = useRoute()
-
-const players = computed<any>(() => {
-  if(ws.players) {
-    return ws.players
-  } else {
-    return "Nothing"
-  }
-})
-
-console.log(ws.players, players.value)
 
 </script>
 

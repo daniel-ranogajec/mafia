@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import Day from '@/components/Day.vue';
-import Night from '@/components/Night.vue';
-import Results from '@/components/Results.vue';
-import Voting from '@/components/Voting.vue';
+import Day from '@/components/Day.vue'
+import Night from '@/components/Night.vue'
+import Results from '@/components/Results.vue'
+import Voting from '@/components/Voting.vue'
 import Roles from '@/components/Roles/Roles.vue'
 import { usePlayRoom, CurrentGameScreen } from '@/stores/playRoom'
+import { useWebsocket } from '@/stores/websocket'
+import { useRoute } from 'vue-router'
 
 const playerRoom = usePlayRoom()
+const ws = useWebsocket();
+const route = useRoute();
+
+if(ws.socket === null && route.params.id !== undefined) {
+  ws.joinNewSocket();
+}
 
 const role = localStorage.getItem('role')
 </script>

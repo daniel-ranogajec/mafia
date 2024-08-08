@@ -1,7 +1,9 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
 
 export const useWebsocket = defineStore('websocket', () => {
+  const router = useRouter()
   const messages = ref<string>('')
 
   const uname = localStorage.getItem("username")
@@ -44,6 +46,9 @@ export const useWebsocket = defineStore('websocket', () => {
           } else if (message.status === 'role') {
             localStorage.setItem("role", message.role)
           }
+          if(message.status === "role") {
+            router.push({path: `/PlayRoom/${roomId.value}`})
+          }
         } catch (parseError) {
           console.error('Error parsing WebSocket message:', parseError)
         }
@@ -51,6 +56,7 @@ export const useWebsocket = defineStore('websocket', () => {
 
       socket.value.onclose = (event) => {
         console.log('CLOSED PLAYER: ', event)
+        //router.push({path: `/`})
       }
     }
   }
