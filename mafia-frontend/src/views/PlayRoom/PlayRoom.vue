@@ -26,7 +26,7 @@ const role = localStorage.getItem('role')
       <div v-if="playerRoom.currentScreen === CurrentGameScreen.VOTING">
         <Voting />
       </div>
-      <button class="btn btn-primary" @click="playerRoom.nextCycle()">Change screen</button>
+      <button class="btn btn-danger" @click="playerRoom.nextCycle()">Change screen</button>
       <Roles :title="role" :text="'Some text for the role'" :buttonText="'Show role'" :closeButton="'Close'" />
     </div>
   </main>

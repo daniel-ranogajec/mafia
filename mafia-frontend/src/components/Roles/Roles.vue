@@ -35,7 +35,7 @@ function fireAlert() {
 
 <template>
   <main>
-    <button class="btn btn-primary" @click="fireAlert">{{  props.buttonText }}</button> 
+    <button class="btn btn-danger" @click="fireAlert">{{  props.buttonText }}</button>
   </main>
 </template>
 <style></style>

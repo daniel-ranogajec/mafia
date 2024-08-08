@@ -25,7 +25,7 @@ function joinGame() {
     </div>
 
     <div class="row m-3 mt-0">
-      <button type="button" @click="joinGame" class="btn btn-primary">Join Game</button>
+      <button type="button" @click="joinGame" class="btn btn-danger">Join Game</button>
     </div>
   </div>
 </template>

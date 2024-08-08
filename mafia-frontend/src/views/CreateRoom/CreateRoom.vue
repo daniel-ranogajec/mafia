@@ -72,7 +72,7 @@ async function startGame(): Promise<void> {
     </div>
     <div class="row center">
       <div class="column" v-if="createRoom.allRolesCounted >= 0">
-        <button @click="startGame" type="button" class="btn btn-primary">Start game</button>
+        <button @click="startGame" type="button" class="btn btn-danger">Start game</button>
       </div>
     </div>
   </main>
