@@ -24,7 +24,8 @@ function callCreateRoom() {
 </script>
 
 <template>
-  <main>
+  <main class="main">
+    <h1 class="title mt-5">MAFIA</h1>
     <div class="container">
       <div class="row m-3 mb-3">
         <input type="text" v-model="ws.userName" class="form-control" placeholder="Enter your name" />
@@ -42,12 +43,28 @@ function callCreateRoom() {
     </div>
   </main>
 </template>
-<style>
+
+<style scoped>
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: 4rem;
+  margin: 2rem;
+  color: whitesmoke;
+}
+
 button {
-  width: inherit
+  width: 100%;
 }
 
 input {
   text-align: center;
+  width: 100%;
 }
 </style>
