@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useWebsocket = defineStore('websocket', () => {
   const messages = ref<string>('')
-  
+
   const uname = localStorage.getItem("username")
   const userName = ref<string>( uname ? uname : "")
   const roomId = ref<string>('')
@@ -19,7 +19,7 @@ export const useWebsocket = defineStore('websocket', () => {
       }
       localStorage.setItem("username", userName.value)
       socket.value = new WebSocket(
-        `ws://localhost:8000?username=${userName.value}&room_id=${roomId.value}`
+        `${import.meta.env.VITE_API_BASE_URL}?username=${userName.value}&room_id=${roomId.value}`
       )
 
       socket.value.onopen = () => {
@@ -61,7 +61,7 @@ export const useWebsocket = defineStore('websocket', () => {
       players.value.splice(index, 1);
     }
   }
-  
+
   return {
     socket,
     joinNewSocket,

@@ -10,7 +10,7 @@ const ws = useWebsocket()
 const gamePin = ref<string>("")
 
 function joinGame() {
-  axios.post('http://localhost:8000/checkRoom', { roomId: gamePin.value, username: ws.userName }).then(res => {
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}/checkRoom`, { roomId: gamePin.value, username: ws.userName }).then(res => {
     router.push({
       path: `/LobbyRoom/${res.data.roomId}`}
     )

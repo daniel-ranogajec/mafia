@@ -10,7 +10,7 @@ const router = useRouter()
 const ws = useWebsocket()
 
 function callCreateRoom() {
-  axios.get('http://localhost:8000/createRoom').then(res => {
+  axios.get(`${import.meta.env.VITE_API_BASE_URL}/createRoom`).then(res => {
     if (res.data.roomId !== undefined) {
       createRoom.room = res.data;
       router.push({
