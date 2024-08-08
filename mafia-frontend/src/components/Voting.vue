@@ -2,6 +2,9 @@
 <template>
     <main>
         Voting
+        <div>
+            Nekaj drugo
+        </div>
     </main>
 </template>
 <style></style>

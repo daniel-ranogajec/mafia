@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useLobbyRoom } from '@/stores/lobbyRoom'
 import { useWebsocket } from '@/stores/websocket';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-const lobbyRoom = useLobbyRoom()
 const ws = useWebsocket()
 const route = useRoute()
 
