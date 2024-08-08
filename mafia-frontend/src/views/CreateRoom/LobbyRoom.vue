@@ -6,9 +6,6 @@ import { useRoute } from 'vue-router';
 const ws = useWebsocket()
 const route = useRoute()
 
-ws.roomId = route.params.id.toString()
-ws.joinNewSocket()
-
 const players = computed<any>(() => {
   if(ws.players) {
     return ws.players

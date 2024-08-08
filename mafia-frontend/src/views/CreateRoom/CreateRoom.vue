@@ -11,9 +11,6 @@ const route = useRoute()
 const createRoom = useCreateRoom()
 const ws = useWebsocket()
 
-ws.roomId = route.params.id.toString()
-ws.joinNewSocket()
-
 async function startGame(): Promise<void> {
   if (createRoom.choosenRoles.length !== ws.players.length) {
     alert('Not enough roles as players')
