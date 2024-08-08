@@ -41,16 +41,18 @@ router.post('/startGame', function (req, res, next) {
     }
 
     const shuffledRoles = roomManagement.shuffleArray(roles)
-    console.log(roles)
-    console.log(shuffledRoles)
     let i = 0;
-    room.forEach((socket, username) => {
+    room.forEach((client, username) => {
         const role = shuffledRoles[i++]
-        socket.send(JSON.stringify({ "status": "role", "role": role }))
+        client.role = role
+        client.alive = true
+        client.socket.send(JSON.stringify({ "status": "game_started" }))
+        client.socket.send(JSON.stringify({ "status": "role", "role": role, "alive": true }))
+
     });
 
+
     res.send('Roles assigned and sent to players')
-    
 
 })
 

@@ -35,7 +35,7 @@ class RoomManager {
             clients = new Map()
             this.rooms.set(roomId, clients)
         }
-        clients.set(username, socket)
+        clients.set(username, {role: "", alive: true, socket: socket})
     }
 
     removeClientFromRoom(roomId, username) {
@@ -63,9 +63,11 @@ class RoomManager {
             let randomIndex = Math.floor(Math.random() * currentIndex)
             currentIndex--
             [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
-        } 
+        }
         return array
     }
+
+
 }
 
 module.exports = new RoomManager()
