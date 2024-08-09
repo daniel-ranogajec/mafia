@@ -44,7 +44,7 @@ class RoomManager {
             this.rooms.set(roomId, clients)
             this.votes.set(roomId, votes)
         }
-        clients.set(username, {role: "", alive: true, socket: socket})
+        clients.set(username, {role: "", alive: true, socket: socket, "voted_for": ""})
     }
 
     removeClientFromRoom(roomId, username) {
@@ -75,17 +75,28 @@ class RoomManager {
         return array
     }
 
-    getVotes(roomId) {
-        return this.votes.get(roomId)
-    }
-
-    setVotes(roomId, player, phase) {
-        let votes = this.votes.get(roomId)
-        votes.forEach(e => {
-            if (e.player === player) {
-                e.count++
+    setVotes(roomId, player, votedFor, phase) {
+        if (phase === "voting") {
+            let votes = this.votes.get(roomId)
+            votes.forEach(e => {
+                if (e.player === votedFor) {
+                    e.count++
+                }
+            })
+        } else if (phase === "night") {
+            let clients = this.rooms.get(roomId)
+            let client = clients.get(player)
+            if (client.role.toLowerCase() === "detective") {
+                let role = clients.get(votedFor).role
+                if (role !== undefined) {
+                    client.socket.send(JSON.stringify({"status": "check_role", "player": votedFor, "role": clients.get(votedFor).role}))
+                } else {
+                    client.socket.send(JSON.stringify({"error": "player role not found"}))
+                }
             }
-        })
+            client.voted_for = votedFor
+        }
+
         let count = this.count.get(roomId)
         this.count.set(roomId, ++count)
         this.checkIfAllVoted(roomId, phase)
@@ -110,13 +121,41 @@ class RoomManager {
 
             let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length)
             playerToKill = playersWithMaxCount[randomIndex].player
+        } else if (phase === "night") {
+            let clients = this.rooms.get(roomId)
+            let clientsArray = Array.from(clients.values());
+            let mafiaVotes = clientsArray.filter(e => { return e.role.toLowerCase() === "mafia"}).map(e => e.voted_for)
+
+            let count = {}
+
+            mafiaVotes.forEach(player => {
+                if (count[player]) {
+                    count[player]++;
+                } else {
+                    count[player] = 1;
+                }
+            })
+            let maxCount = Math.max(...Object.values(count))
+            let playersWithMaxCount = Object.keys(count).filter(name => count[name] === maxCount)
+
+            let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length)
+
+            playerToKill = playersWithMaxCount[randomIndex]
+
+            let doctorVotes = clientsArray.filter(e => { return e.role.toLowerCase() === "mafia"}).map(e => e.voted_for)
+
+            if (doctorVotes.length > 0) {
+                if (doctorVotes[0] === playerToKill) {
+                    playerToKill = undefined
+                }
+            }
+
         }
 
         if (playerToKill !== undefined) {
             let clients = this.rooms.get(roomId)
             let player = clients.get(playerToKill)
             player.alive = false
-
 
             this.rooms.get(roomId).forEach((client, userID) => {
                 client.socket.send(JSON.stringify({"status": "voted_out", "player": playerToKill}))

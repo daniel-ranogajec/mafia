@@ -48,18 +48,10 @@ class WebSocketServer {
                     if (client.role !== "") {
                         socket.send(JSON.stringify({"status": "role", "role": client.role, "alive": client.alive }))
                     }
-                } else if (messageJSON.message === "night") {
-                    if (messageJSON.player !== null) {
-                        roomManagement.setVotes(connectionParams.room_id, messageJSON.player, messageJSON.message)
-                    }
+                } else if (messageJSON.message === "night" || messageJSON.message === "voting") {
+                    roomManagement.setVotes(connectionParams.room_id, connectionParams.username, messageJSON.player, messageJSON.message)
 
-                    this.broadcast(JSON.stringify({"status": "user_voted_night", "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)
-                } else if (messageJSON.message === "voting") {
-                    if (messageJSON.player !== null) {
-                        roomManagement.setVotes(connectionParams.room_id, messageJSON.player, messageJSON.message)
-                    }
-
-                    this.broadcast(JSON.stringify({"status": "user_voted", "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)
+                    this.broadcast(JSON.stringify({"status": "user_voted_" + messageJSON.message, "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)
                 }
             })
 
