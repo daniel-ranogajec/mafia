@@ -25,7 +25,7 @@ function choosenPlayer(player: string) {
 }
 
 function confirmChoice() {
-  ws.socket?.send(JSON.stringify({choice: playerChoice.value}))
+  ws.socket?.send(JSON.stringify({message: "night", player: playerChoice.value}))
   playerReady.value = true;
 }
 
@@ -35,7 +35,7 @@ function confirmChoice() {
     <div v-if="!playerReady">
       <div class="row card">
         Night
-      </div> 
+      </div>
       <div class="row card mg-y-15">
           Choose a player:
       </div>

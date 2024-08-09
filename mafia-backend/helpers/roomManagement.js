@@ -1,6 +1,10 @@
+const WebSocket = require("ws");
+
 class RoomManager {
     constructor() {
         this.rooms = new Map()
+        this.votes = new Map()
+        this.count = new Map()
     }
 
     generateRoomId() {
@@ -14,6 +18,8 @@ class RoomManager {
     createRoom() {
         const roomId = this.generateRoomId()
         this.rooms.set(roomId, new Map())
+        this.votes.set(roomId, [])
+        this.count.set(roomId, 0)
         return roomId
     }
 
@@ -31,9 +37,12 @@ class RoomManager {
 
     addClientToRoom(roomId, username, socket) {
         let clients = this.rooms.get(roomId)
+        let votes = this.votes.get(roomId)
+        votes.push({"player": username, count: 0})
         if (!clients) {
             clients = new Map()
             this.rooms.set(roomId, clients)
+            this.votes.set(roomId, votes)
         }
         clients.set(username, {role: "", alive: true, socket: socket})
     }
@@ -57,7 +66,6 @@ class RoomManager {
     }
 
     shuffleArray(array) {
-        console.log(array)
         let currentIndex = array.length
         while (currentIndex != 0) {
             let randomIndex = Math.floor(Math.random() * currentIndex)
@@ -67,6 +75,60 @@ class RoomManager {
         return array
     }
 
+    getVotes(roomId) {
+        return this.votes.get(roomId)
+    }
+
+    setVotes(roomId, player, phase) {
+        let votes = this.votes.get(roomId)
+        votes.forEach(e => {
+            if (e.player === player) {
+                e.count++
+            }
+        })
+        let count = this.count.get(roomId)
+        this.count.set(roomId, ++count)
+        this.checkIfAllVoted(roomId, phase)
+    }
+
+    checkIfAllVoted(roomId, phase) {
+        let clients = this.rooms.get(roomId)
+        let clientsArray = Array.from(clients.values());
+        let aliveVotes = clientsArray.filter(e => e.alive)
+
+        if (this.count.get(roomId) >= aliveVotes.length) {
+            this.resolveAction(roomId, phase)
+        }
+    }
+
+    resolveAction(roomId, phase) {
+        let playerToKill
+        if (phase === "voting") {
+            let votes = this.votes.get(roomId)
+            let maxCount = Math.max(...votes.map(player => player.count))
+            let playersWithMaxCount = votes.filter(player => player.count === maxCount)
+
+            let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length)
+            playerToKill = playersWithMaxCount[randomIndex].player
+        }
+
+        if (playerToKill !== undefined) {
+            let clients = this.rooms.get(roomId)
+            let player = clients.get(playerToKill)
+            player.alive = false
+
+
+            this.rooms.get(roomId).forEach((client, userID) => {
+                client.socket.send(JSON.stringify({"status": "voted_out", "player": playerToKill}))
+            })
+        }
+        let voting = this.votes.get(roomId)
+        let votingNew = voting.filter(e => e.player !== playerToKill).map(e => { return {"player": e.player, "count": 0}})
+        this.votes.set(roomId, votingNew)
+        this.count.set(roomId, 0)
+
+
+    }
 
 }
 
