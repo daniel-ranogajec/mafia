@@ -48,7 +48,7 @@ class WebSocketServer {
                     if (client.role !== "") {
                         socket.send(JSON.stringify({"status": "role", "role": client.role, "alive": client.alive }))
                     }
-                } else if (messageJSON.message === "night" || messageJSON.message === "voting") {
+                } else if (messageJSON.message === "night" || messageJSON.message === "voting" || messageJSON.message === "ready") {
                     roomManagement.setVotes(connectionParams.room_id, connectionParams.username, messageJSON.player, messageJSON.message)
 
                     this.broadcast(JSON.stringify({"status": "user_voted_" + messageJSON.message, "user": connectionParams.username}), connectionParams.room_id, connectionParams.username)

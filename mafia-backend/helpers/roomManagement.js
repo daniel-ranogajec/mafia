@@ -79,8 +79,12 @@ class RoomManager {
         if (phase === "voting") {
             let votes = this.votes.get(roomId)
             votes.forEach(e => {
-                if (e.player === votedFor) {
-                    e.count++
+                if (!e.voted) {
+                    if (e.player === player) {
+                        e.voted = true
+                    } else if (e.player === votedFor) {
+                        e.count++
+                    }
                 }
             })
         } else if (phase === "night") {
@@ -95,6 +99,12 @@ class RoomManager {
                 }
             }
             client.voted_for = votedFor
+        } else if (phase === "ready") {
+            let votes = this.votes.get(roomId)
+            if (votes.includes(player)) {
+                return
+            }
+            votes.push(player)
         }
 
         let count = this.count.get(roomId)
@@ -149,7 +159,10 @@ class RoomManager {
                     playerToKill = undefined
                 }
             }
-
+        } else if (phase === "ready") {
+            this.rooms.get(roomId).forEach((client, userID) => {
+                client.socket.send(JSON.stringify({"status": "all_ready"}))
+            })
         }
 
         if (playerToKill !== undefined) {
@@ -160,13 +173,29 @@ class RoomManager {
             this.rooms.get(roomId).forEach((client, userID) => {
                 client.socket.send(JSON.stringify({"status": "voted_out", "player": playerToKill}))
             })
+
+            let clientsArray = Array.from(clients.values());
+            let mafia = clientsArray.filter(e => { return e.role.toLowerCase() === "mafia"}).map(e => e.voted_for)
+
+            if (mafia.length == 0) {
+                this.rooms.get(roomId).forEach((client, userID) => {
+                    client.socket.send(JSON.stringify({"status": "game_over", "message": "village_wins"}))
+                })
+            }
+
+            let aliveVotes = clientsArray.filter(e => e.alive)
+
+            if (mafia.length >= aliveVotes.length) {
+                this.rooms.get(roomId).forEach((client, userID) => {
+                    client.socket.send(JSON.stringify({"status": "game_over", "message": "mafia_wins"}))
+                })
+            }
+
         }
         let voting = this.votes.get(roomId)
         let votingNew = voting.filter(e => e.player !== playerToKill).map(e => { return {"player": e.player, "count": 0}})
         this.votes.set(roomId, votingNew)
         this.count.set(roomId, 0)
-
-
     }
 
 }
