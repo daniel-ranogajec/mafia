@@ -33,7 +33,7 @@ function confirmChoice() {
 
 <template>
   <main>
-    <div v-if="!playerReady">
+    <div v-if="!playerReady && ws.playerVoutedOut === null">
       <div class="row card">
         Voting
       </div>
@@ -49,8 +49,14 @@ function confirmChoice() {
         <button @click="confirmChoice()" class="btn btn-danger">Confirm choice</button>
       </div>
     </div>
-    <div v-else>
+    <div v-else-if="playerReady && ws.playerVoutedOut === null">
       <h1 class="card">Waiting for other players</h1>
+    </div>
+    <div v-else-if="ws.playerVoutedOut !== null">
+      <h1 class="card">Player vouted out: </h1>
+      <div class="row card text-center mg-y-25">
+        {{ ws.playerVoutedOut }}
+      </div>
     </div>
   </main>
 </template>

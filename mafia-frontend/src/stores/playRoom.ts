@@ -6,7 +6,8 @@ export enum CurrentGameScreen {
   NIGHT,
   RESULTS,
   DAY,
-  VOTING
+  VOTING,
+  END
 }
 
 export interface ChoosenPlayer {
@@ -20,13 +21,24 @@ export const usePlayRoom = defineStore('playRoom', () => {
   const players = ref<ChoosenPlayer[]>([])
   const choosenPlayer = ref<ChoosenPlayer | null>(null)
 
-  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
+  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.DAY)
+
+  const readyBool = ref<boolean>(false)
+  const readyLength = ref<number>(0)
 
   function initialize() {
     players.value = []
     ws.players.map((val) => {
       players.value.push({ name: val })
     })
+    checkTheCurrentGame(players.value)
+  }
+
+  function checkTheCurrentGame(players: ChoosenPlayer[]) {
+    if(players.length === 1) {
+      console.log("Game is over")
+      currentScreen.value = CurrentGameScreen.END
+    }
   }
 
   function nextCycle() {
@@ -37,6 +49,7 @@ export const usePlayRoom = defineStore('playRoom', () => {
       currentScreen.value = CurrentGameScreen.DAY
     }
     else if(currentScreen.value === CurrentGameScreen.DAY){
+      readyBool.value = false;
       currentScreen.value = CurrentGameScreen.VOTING
     }
     else if(currentScreen.value === CurrentGameScreen.VOTING){
@@ -49,6 +62,8 @@ export const usePlayRoom = defineStore('playRoom', () => {
     nextCycle,
     players,
     choosenPlayer,
-    initialize
+    initialize,
+    readyBool,
+    readyLength
   }
 })
