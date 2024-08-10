@@ -185,7 +185,7 @@ class RoomManager {
 
             let aliveVotes = clientsArray.filter(e => e.alive)
 
-            if (mafia.length >= aliveVotes.length) {
+            if (mafia.length >= aliveVotes.length - mafia.length) {
                 this.rooms.get(roomId).forEach((client, userID) => {
                     client.socket.send(JSON.stringify({"status": "game_over", "message": "mafia_wins"}))
                 })
