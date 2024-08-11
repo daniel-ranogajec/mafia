@@ -127,10 +127,12 @@ class RoomManager {
         if (phase === "voting") {
             let votes = this.votes.get(roomId)
             let maxCount = Math.max(...votes.map(player => player.count))
-            let playersWithMaxCount = votes.filter(player => player.count === maxCount)
+            if (maxCount > Math.floor(this.count.get(roomId) / 2)) {
+                let playersWithMaxCount = votes.filter(player => player.count === maxCount)
 
-            let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length)
-            playerToKill = playersWithMaxCount[randomIndex].player
+                let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length)
+                playerToKill = playersWithMaxCount[randomIndex].player
+            }
         } else if (phase === "night") {
             let clients = this.rooms.get(roomId)
             let clientsArray = Array.from(clients.values());
@@ -191,6 +193,10 @@ class RoomManager {
                 })
             }
 
+        } else {
+            this.rooms.get(roomId).forEach((client, userID) => {
+                client.socket.send(JSON.stringify({"status": "voted_out", "player": ""}))
+            })
         }
         let voting = this.votes.get(roomId)
         let votingNew = voting.filter(e => e.player !== playerToKill).map(e => { return {"player": e.player, "count": 0}})
