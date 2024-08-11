@@ -1,23 +1,28 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
+import { usePlayRoom } from './playRoom'
 
 export const useWebsocket = defineStore('websocket', () => {
   const router = useRouter()
   const messages = ref<string>('')
+  const playRoom = usePlayRoom();
 
   const uname = localStorage.getItem('username')
   const userName = ref<string>(uname ? uname : '')
   const roomId = ref<string>('')
   const playerVoutedOut = ref<string | null>(null)
-  const playerKilled = ref<string | null>(null)
+  const allReady = ref<boolean>(false)
+  const endMesagge = ref<string>('')
 
   const players = ref<string[]>([])
+  const deadPlayers = ref<string[]>([])
 
   const socket = ref<WebSocket | null>(null)
 
   function joinNewSocket() {
-    playerVoutedOut.value = null
+    playerVoutedOut.value = null;
+    endMesagge.value = '';
 
     if (!socket.value) {
       if (userName.value == '') {
@@ -37,6 +42,7 @@ export const useWebsocket = defineStore('websocket', () => {
       }
 
       socket.value.onmessage = (event) => {
+        allReady.value = false;
         try {
           const message = JSON.parse(event.data)
           if (message.status === 'user_connected' || message.status === 'connected') {
@@ -47,21 +53,26 @@ export const useWebsocket = defineStore('websocket', () => {
             }
           } else if (message.status === 'user_disconnected') {
             removePlayer(message.user)
-          } else if (message.status === 'role') {
+          } else if (message.status === 'all_ready') {
             localStorage.setItem('role', message.role)
+            playRoom.nextCycle();
           }
           if (message.status === 'role') {
+            localStorage.setItem('role', message.role)
             router.push({ path: `/PlayRoom/${roomId.value}` })
           }
           if (message.status === 'voted_out') {
-            console.log('Player vouted out: ', message.player)
+            deadPlayers.value.push(message.player)
             playerVoutedOut.value = message.player
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
-            console.log(
-              players.value,
-            )
-            console.log(players.value.filter((val) => val !== message.player))
+          }
+          if (message.status === 'game_over') {
+            if(message.message === 'mafia_wins') {
+              endMesagge.value = 'Mafia won!'
+            } else {
+              endMesagge.value = 'Villagers won!'
+            }
           }
         } catch (parseError) {
           console.error('Error parsing WebSocket message:', parseError)
@@ -91,6 +102,9 @@ export const useWebsocket = defineStore('websocket', () => {
     userName,
     roomId,
     players,
-    playerVoutedOut
+    playerVoutedOut,
+    allReady,
+    endMesagge,
+    deadPlayers
   }
 })

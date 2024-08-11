@@ -21,10 +21,9 @@ export const usePlayRoom = defineStore('playRoom', () => {
   const players = ref<ChoosenPlayer[]>([])
   const choosenPlayer = ref<ChoosenPlayer | null>(null)
 
-  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.DAY)
+  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
 
   const readyBool = ref<boolean>(false)
-  const readyLength = ref<number>(0)
 
   function initialize() {
     players.value = []
@@ -64,6 +63,5 @@ export const usePlayRoom = defineStore('playRoom', () => {
     choosenPlayer,
     initialize,
     readyBool,
-    readyLength
   }
 })

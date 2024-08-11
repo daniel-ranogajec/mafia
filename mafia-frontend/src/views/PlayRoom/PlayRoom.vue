@@ -19,6 +19,7 @@ if(ws.socket === null && route.params.id !== undefined) {
 }
 
 const role = localStorage.getItem('role')
+console.log(role)
 </script>
 
 <template>

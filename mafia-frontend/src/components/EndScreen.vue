@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { usePlayRoom } from '@/stores/playRoom'
+import { useWebsocket } from '@/stores/websocket';
 
-const playerRoom = usePlayRoom()
+const playerRoom = usePlayRoom();
+const ws = useWebsocket();
+
 </script>
 <template>
   <main>
@@ -17,13 +20,16 @@ const playerRoom = usePlayRoom()
     <div class="row card mg-y-15">
       <div class="row">
         <div class="col col-8">Dead players:</div>
-          <div class="col" v-for="dead in playerRoom.players" v-bind:key="dead.name">
-            {{ dead.name }}
+          <div class="col" v-for="dead in ws.deadPlayers" v-bind:key="dead.name">
+            {{ dead }}
           </div>
       </div>
     </div>
     <div class="row card mg-y-15">
-      <h1>Someone won!</h1>      
+      <h1>{{ ws.endMesagge }}</h1>      
+    </div>
+    <div class="row card mg-y-15">
+      <button class="btn btn-warning" >Play again</button>      
     </div>
   </main>
 </template>

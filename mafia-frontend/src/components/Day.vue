@@ -8,12 +8,7 @@ const playRoom = usePlayRoom();
 
 function ready() {
   playRoom.readyBool = true;
-  playRoom.readyLength++;
   ws.socket?.send(JSON.stringify({'message': 'ready'}))
-  if(playRoom.readyLength === ws.players.length) {
-    playRoom.nextCycle()
-  }
-  console.log(playRoom.readyLength, ws.players.length)
 }
 
 </script>
