@@ -18,8 +18,6 @@ if(ws.socket === null && route.params.id !== undefined) {
   ws.joinNewSocket();
 }
 
-const role = localStorage.getItem('role')
-console.log(role)
 </script>
 
 <template>
@@ -44,7 +42,7 @@ console.log(role)
         <button class="btn btn-danger" @click="playerRoom.nextCycle()">Change screen</button>
       </div>
       <div class="mg-y-10">
-        <Roles :title="role" :text="'Some text for the role'" :buttonText="'Show role'" :closeButton="'Close'" />
+        <Roles :title="ws.role" :text="'Some text for the role'" :buttonText="'Show role'" :closeButton="'Close'" />
       </div>
     </div>
   </main>

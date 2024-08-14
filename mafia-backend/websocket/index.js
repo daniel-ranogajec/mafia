@@ -56,7 +56,7 @@ class WebSocketServer {
             })
 
             socket.on('close', () => {
-                roomManagement.removeClientFromRoom(connectionParams.room_id, connectionParams.username)
+                //roomManagement.removeClientFromRoom(connectionParams.room_id, connectionParams.username)
 
                 this.broadcast(JSON.stringify({"status": "user_disconnected", "user": connectionParams.username}), connectionParams.room_id)
             })

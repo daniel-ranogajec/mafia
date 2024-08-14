@@ -48,12 +48,10 @@ router.post('/startGame', function (req, res, next) {
         client.alive = true
         client.socket.send(JSON.stringify({ "status": "game_started" }))
         client.socket.send(JSON.stringify({ "status": "role", "role": role, "alive": true }))
-
     });
 
 
     res.send('Roles assigned and sent to players')
-
 })
 
 

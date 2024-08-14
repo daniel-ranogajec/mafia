@@ -36,7 +36,12 @@ class RoomManager {
     }
 
     addClientToRoom(roomId, username, socket) {
+        console.log("added clIENT TO THE ROOM")
         let clients = this.rooms.get(roomId)
+        console.log(clients.get(username))
+        if (clients.get(username) !== undefined) {
+            return
+        }
         let votes = this.votes.get(roomId)
         votes.push({"player": username, count: 0})
         if (!clients) {
@@ -154,7 +159,7 @@ class RoomManager {
 
             playerToKill = playersWithMaxCount[randomIndex]
 
-            let doctorVotes = clientsArray.filter(e => { return e.role.toLowerCase() === "mafia"}).map(e => e.voted_for)
+            let doctorVotes = clientsArray.filter(e => { return e.role.toLowerCase() === "doctor"}).map(e => e.voted_for)
 
             if (doctorVotes.length > 0) {
                 if (doctorVotes[0] === playerToKill) {

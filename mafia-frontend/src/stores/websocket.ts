@@ -10,6 +10,7 @@ export const useWebsocket = defineStore('websocket', () => {
 
   const uname = localStorage.getItem('username')
   const userName = ref<string>(uname ? uname : '')
+  const role = ref<string>("")
   const roomId = ref<string>('')
   const playerVoutedOut = ref<string | null>(null)
   const allReady = ref<boolean>(false)
@@ -35,6 +36,7 @@ export const useWebsocket = defineStore('websocket', () => {
 
       socket.value.onopen = () => {
         console.log('WebSocket connection established')
+        socket.value.send(JSON.stringify({'message': 'refresh'}))
       }
 
       socket.value.onerror = (error) => {
@@ -54,11 +56,10 @@ export const useWebsocket = defineStore('websocket', () => {
           } else if (message.status === 'user_disconnected') {
             removePlayer(message.user)
           } else if (message.status === 'all_ready') {
-            localStorage.setItem('role', message.role)
             playRoom.nextCycle();
           }
           if (message.status === 'role') {
-            localStorage.setItem('role', message.role)
+            role.value = message.role
             router.push({ path: `/PlayRoom/${roomId.value}` })
           }
           if (message.status === 'voted_out') {
@@ -78,8 +79,6 @@ export const useWebsocket = defineStore('websocket', () => {
           console.error('Error parsing WebSocket message:', parseError)
         }
       }
-
-      console.log(players.value)
 
       socket.value.onclose = (event) => {
         console.log('CLOSED PLAYER: ', event)
@@ -105,6 +104,7 @@ export const useWebsocket = defineStore('websocket', () => {
     playerVoutedOut,
     allReady,
     endMesagge,
-    deadPlayers
+    deadPlayers,
+    role
   }
 })
