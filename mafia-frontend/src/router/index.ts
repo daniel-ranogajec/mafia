@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory, useRoute} from 'vue-router'
-import HomeView from '../views/Home.vue'
+import HomeView from '../views/HomeScreen.vue'
 import JoinRoom from '@/views/JoinRoom/JoinRoom.vue'
 import CreateRoom from '@/views/CreateRoom/CreateRoom.vue'
 import PlayRoom from '@/views/PlayRoom/PlayRoom.vue'

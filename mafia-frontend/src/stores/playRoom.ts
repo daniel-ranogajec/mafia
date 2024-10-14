@@ -41,6 +41,7 @@ export const usePlayRoom = defineStore('playRoom', () => {
   }
 
   function nextCycle() {
+    console.log(currentScreen.value)
     if(currentScreen.value === CurrentGameScreen.NIGHT){
       currentScreen.value = CurrentGameScreen.RESULTS
     }

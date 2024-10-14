@@ -1,35 +1,43 @@
 @import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+.title {
+  font-size: 4rem;
+  margin: 2rem;
+  color: whitesmoke;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.subHeader {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  color: whitesmoke;
+  text-align: center;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+button {
+  width: 100%;
+  transition: filter 0.3s ease 0.3s;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+input {
+  text-align: center;
+  width: 100%;
+}
+.mg-y-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.mg-y-15 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.mg-y-25 {
+  margin-top: 15px;
+  margin-bottom: 15px;
 }

@@ -54,14 +54,6 @@ function confirmChoice() {
   </main>
 </template>
 <style>
-.mg-y-15 {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-.mg-y-25 {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
 .choosenPlayer {
   border: 1px solid red !important;
   background-color: #fef4f4 !important;

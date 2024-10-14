@@ -10,6 +10,8 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
+@import "@/assets/main.css";
+
 html, body, #app {
   margin: 0;
   height: 100%;

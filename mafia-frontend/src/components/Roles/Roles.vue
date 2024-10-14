@@ -1,27 +1,17 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2'
-import roles from '../../assets/roles.json'
 
-interface Props {
-  title: {
-    type: String
-    Default: 'Nothing provided for the role'
-  }
-  text: {
-    type: String
-    Default: 'No text provided for the role'
-  }
-  buttonText: {
-    type: String
-    default: 'Ok'
-  }
-  closeButton: {
-    type: String
-    default: 'Close'
-  }
-}
-
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<{
+  title: string,
+  text: string,
+  buttonText: string,
+  closeButton: string
+}>(), {
+  title: 'Nothing provided for the role',
+  text: 'No text provided for the role',
+  buttonText: 'Ok',
+  closeButton: 'Close'
+})
 
 function fireAlert() {
   Swal.fire({
@@ -34,7 +24,7 @@ function fireAlert() {
 
 <template>
   <main>
-    <button class="btn btn-danger" @click="fireAlert">{{  props.buttonText }}</button>
+    <button class="btn btn-danger" @click="fireAlert">{{ props.buttonText }}</button>
   </main>
 </template>
 <style></style>

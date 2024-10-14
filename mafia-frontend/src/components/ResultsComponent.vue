@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { usePlayRoom } from '@/stores/playRoom';
 import { useWebsocket } from '@/stores/websocket';
+import { computed } from 'vue';
 
 const ws = useWebsocket();
 const playRoom = usePlayRoom();
 
 function ready() {
   playRoom.readyBool = true;
-  ws.socket?.send(JSON.stringify({'message': 'ready'}))
+  ws.socket?.send(JSON.stringify({ 'message': 'ready' }))
 }
 
+const currentMessage = computed<string>(() => {
+  console.log("ws.playerVoutedOut, ", ws.playerVoutedOut, ws.messages)
+  if(ws.playerVoutedOut !== null && ws.playerVoutedOut !== "") {
+    return `Player killed: ${ws.playerVoutedOut}`
+  } else {
+    return ws.messages
+  }
+})
+
+console.log(currentMessage.value)
 </script>
+
 <template>
   <main>
     <div v-if="!playRoom.readyBool">
       <div class="card row text-center mg-y-25">
-        <h1 class="">Day time</h1>
+        <h1 class="">Results: </h1>
       </div>
       <div class="card row text-center mg-y-25">
-        Are you ready to vote?
+        {{ currentMessage }}
       </div>
       <div class="card row text-center mg-y-25">
         <button class="btn btn-danger" @click="ready">I'm ready</button>
@@ -32,6 +43,5 @@ function ready() {
     </div>
   </main>
 </template>
-<style>
 
-</style>
+<style></style>

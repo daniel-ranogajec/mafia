@@ -32,6 +32,7 @@ function joinRoom() {
     <h1 class="title mt-5">MAFIA</h1>
     <div class="container">
       <div class="row m-3 mb-3">
+        <div class="subHeader">Your display name</div>
         <input type="text" v-model="ws.userName" class="form-control" placeholder="Enter your name"/>
       </div>
 
@@ -45,28 +46,3 @@ function joinRoom() {
     </div>
   </main>
 </template>
-
-<style scoped>
-.main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-size: 4rem;
-  margin: 2rem;
-  color: whitesmoke;
-}
-
-button {
-  width: 100%;
-}
-
-input {
-  text-align: center;
-  width: 100%;
-}
-</style>

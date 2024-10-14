@@ -3,10 +3,10 @@ import { usePlayRoom, CurrentGameScreen } from '@/stores/playRoom'
 import { useWebsocket } from '@/stores/websocket'
 import { useRoute } from 'vue-router'
 
-import Day from '@/components/Day.vue'
-import Night from '@/components/Night.vue'
-import Results from '@/components/Results.vue'
-import Voting from '@/components/Voting.vue'
+import Day from '@/components/DayScreen.vue'
+import Night from '@/components/NightComponent.vue'
+import Results from '@/components/ResultsComponent.vue'
+import Voting from '@/components/VotingComponent.vue'
 import Roles from '@/components/Roles/Roles.vue'
 import EndScreen from '@/components/EndScreen.vue'
 
@@ -47,9 +47,3 @@ if(ws.socket === null && route.params.id !== undefined) {
     </div>
   </main>
 </template>
-<style>
-.mg-y-10 {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-</style>

@@ -24,6 +24,7 @@ export const useWebsocket = defineStore('websocket', () => {
   function joinNewSocket() {
     playerVoutedOut.value = null;
     endMesagge.value = '';
+    messages.value = '';
 
     if (!socket.value) {
       if (userName.value == '') {
@@ -36,7 +37,7 @@ export const useWebsocket = defineStore('websocket', () => {
 
       socket.value.onopen = () => {
         console.log('WebSocket connection established')
-        socket.value.send(JSON.stringify({'message': 'refresh'}))
+        socket.value?.send(JSON.stringify({'message': 'refresh'}))
       }
 
       socket.value.onerror = (error) => {
@@ -47,6 +48,7 @@ export const useWebsocket = defineStore('websocket', () => {
         allReady.value = false;
         try {
           const message = JSON.parse(event.data)
+          console.log(message)
           if (message.status === 'user_connected' || message.status === 'connected') {
             if (message.players !== undefined) {
               players.value = message.players
@@ -67,6 +69,10 @@ export const useWebsocket = defineStore('websocket', () => {
             playerVoutedOut.value = message.player
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
+          }
+          if (message.status === 'nothing') {
+            messages.value = message.message
+            playRoom.nextCycle();
           }
           if (message.status === 'game_over') {
             if(message.message === 'mafia_wins') {
