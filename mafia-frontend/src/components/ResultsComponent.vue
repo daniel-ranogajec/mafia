@@ -12,15 +12,12 @@ function ready() {
 }
 
 const currentMessage = computed<string>(() => {
-  console.log("ws.playerVoutedOut, ", ws.playerVoutedOut, ws.messages)
   if(ws.playerVoutedOut !== null && ws.playerVoutedOut !== "") {
     return `Player killed: ${ws.playerVoutedOut}`
   } else {
     return ws.messages
   }
 })
-
-console.log(currentMessage.value)
 </script>
 
 <template>

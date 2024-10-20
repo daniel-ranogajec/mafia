@@ -48,7 +48,7 @@ export const useWebsocket = defineStore('websocket', () => {
         allReady.value = false;
         try {
           const message = JSON.parse(event.data)
-          console.log(message)
+          console.log("MESSAGE IN THE WEBSOCKET .ts ", message)
           if (message.status === 'user_connected' || message.status === 'connected') {
             if (message.players !== undefined) {
               players.value = message.players

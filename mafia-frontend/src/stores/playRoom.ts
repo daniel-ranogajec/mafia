@@ -41,11 +41,11 @@ export const usePlayRoom = defineStore('playRoom', () => {
   }
 
   function nextCycle() {
-    console.log(currentScreen.value)
     if(currentScreen.value === CurrentGameScreen.NIGHT){
       currentScreen.value = CurrentGameScreen.RESULTS
     }
     else if(currentScreen.value === CurrentGameScreen.RESULTS){
+      readyBool.value = true;
       currentScreen.value = CurrentGameScreen.DAY
     }
     else if(currentScreen.value === CurrentGameScreen.DAY){
@@ -55,6 +55,7 @@ export const usePlayRoom = defineStore('playRoom', () => {
     else if(currentScreen.value === CurrentGameScreen.VOTING){
       currentScreen.value = CurrentGameScreen.NIGHT
     }
+    console.log("Current screen? ", currentScreen.value)
   }
 
   return { 

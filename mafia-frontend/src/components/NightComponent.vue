@@ -25,7 +25,7 @@ function choosenPlayer(player: string) {
 }
 
 function confirmChoice() {
-  ws.socket?.send(JSON.stringify({message: "night", player: playerChoice.value}))
+  ws.socket?.send(JSON.stringify({ message: "night", player: playerChoice.value }))
   playerReady.value = true;
 }
 

@@ -9,8 +9,9 @@ import Results from '@/components/ResultsComponent.vue'
 import Voting from '@/components/VotingComponent.vue'
 import Roles from '@/components/Roles/Roles.vue'
 import EndScreen from '@/components/EndScreen.vue'
+import { computed } from 'vue'
 
-const playerRoom = usePlayRoom()
+const playerRoom = usePlayRoom();
 const ws = useWebsocket();
 const route = useRoute();
 
@@ -18,24 +19,30 @@ if(ws.socket === null && route.params.id !== undefined) {
   ws.joinNewSocket();
 }
 
+const currentDay = computed<number>(() => {
+  console.log("CurrentDay from the play room", playerRoom.currentScreen)
+  return playerRoom.currentScreen
+})
+
+
 </script>
 
 <template>
   <main>
     <div class="container">
-      <div v-if="playerRoom.currentScreen === CurrentGameScreen.NIGHT">
+      <div v-if="currentDay === CurrentGameScreen.NIGHT">
         <Night />
       </div>
-      <div v-if="playerRoom.currentScreen === CurrentGameScreen.RESULTS">
+      <div v-if="currentDay === CurrentGameScreen.RESULTS">
         <Results />
       </div>
-      <div v-if="playerRoom.currentScreen === CurrentGameScreen.DAY">
+      <div v-if="currentDay === CurrentGameScreen.DAY">
         <Day />
       </div>
-      <div v-if="playerRoom.currentScreen === CurrentGameScreen.VOTING">
+      <div v-if="currentDay === CurrentGameScreen.VOTING">
         <Voting />
       </div>
-      <div v-if="playerRoom.currentScreen === CurrentGameScreen.END">
+      <div v-if="currentDay === CurrentGameScreen.END">
         <EndScreen />
       </div>
       <div class="mg-y-10">

@@ -103,18 +103,24 @@ class RoomManager {
       let clients = this.rooms.get(roomId);
       let client = clients.get(player);
       if (client.role.toLowerCase() === "detective") {
-        let role = clients.get(votedFor).role;
-        if (role !== undefined) {
-          client.socket.send(
-            JSON.stringify({
-              status: "check_role",
-              player: votedFor,
-              role: clients.get(votedFor).role,
-            })
-          );
+        if(clients.get(votedFor) !== undefined) {
+          let role = clients.get(votedFor).role;
+          if (role !== undefined) {
+            client.socket.send(
+              JSON.stringify({
+                status: "check_role",
+                player: votedFor,
+                role: clients.get(votedFor).role,
+              })
+            );
+          } else {
+            client.socket.send(
+              JSON.stringify({ error: "player role not found" })
+            );
+          }
         } else {
           client.socket.send(
-            JSON.stringify({ error: "player role not found" })
+            JSON.stringify({ error: "player did not look" })
           );
         }
       }
