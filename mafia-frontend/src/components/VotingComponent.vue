@@ -24,16 +24,20 @@ function choosenPlayer(player: string) {
   }
 }
 
+console.log("playerVotedOut", ws.playerVoutedOut, ws.playerVoutedOut === "", playerReady.value)
+
 function confirmChoice() {
   ws.socket?.send(JSON.stringify({message: "voting", player: playerChoice.value}))
   playerReady.value = true;
 }
 
+console.log(playerReady.value, ws.playerVoutedOut, !playerReady.value && ws.playerVoutedOut === null)
+
 </script>
 
 <template>
   <main>
-    <div v-if="!playerReady && ws.playerVoutedOut === null">
+    <div v-if="!playerReady && (ws.playerVoutedOut === '' || ws.playerVoutedOut === null)">
       <div class="row card">
         Voting
       </div>
@@ -49,10 +53,10 @@ function confirmChoice() {
         <button @click="confirmChoice()" class="btn btn-danger">Confirm choice</button>
       </div>
     </div>
-    <div v-else-if="playerReady && ws.playerVoutedOut === null">
+    <div v-else-if="playerReady && (ws.playerVoutedOut === '' || ws.playerVoutedOut === null) ">
       <h1 class="card">Waiting for other players</h1>
     </div>
-    <div v-else-if="ws.playerVoutedOut !== null">
+    <div v-else-if="playerReady && ws.playerVoutedOut !== null && ws.playerVoutedOut !== ''">
       <h1 class="card">Player vouted out: </h1>
       <div class="row card text-center mg-y-25">
         {{ ws.playerVoutedOut }}

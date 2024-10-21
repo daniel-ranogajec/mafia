@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePlayRoom } from '@/stores/playRoom';
+import { CurrentGameScreen, usePlayRoom } from '@/stores/playRoom';
 import { useWebsocket } from '@/stores/websocket';
 import { ref } from 'vue';
 
@@ -11,18 +11,25 @@ function ready() {
   ws.socket?.send(JSON.stringify({'message': 'ready'}))
 }
 
-const timer = ref<number>(120);
+//NEED TO CHANGE TO VOTING AGAIN
+
+const timer = ref<number>(5);
 
 let countDownDate = setInterval(() => {
   console.log(timer.value)
   if (timer.value === 0) {
     clearInterval(countDownDate)
-    ws.socket?.send(JSON.stringify({'message': 'timer_done'}))  
+    playRoom.nextCycle()
   } else {
     timer.value--
   }             
 }, 1000);
+
+if(playRoom.currentScreen !== CurrentGameScreen.DAY) {
+  clearInterval(countDownDate)
+}
 </script>
+
 <template>
   <main>
     <div v-if="playRoom.readyBool">

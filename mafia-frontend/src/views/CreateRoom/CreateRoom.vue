@@ -2,21 +2,42 @@
 import roles from '@/assets/roles.json'
 import { useCreateRoom } from '@/stores/createRoom'
 import { useWebsocket } from '@/stores/websocket';
-import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const router = useRouter()
 const route = useRoute()
 const createRoom = useCreateRoom()
 const ws = useWebsocket()
 
+function checkPlayerLength(a: number, b: number): boolean {
+  console.log(a, b)
+  if (a < b) {
+    Swal.fire({
+      text: "Not enough roles as players",
+      confirmButtonText: "OK"
+    })
+    return false
+  } else if(a > b) {
+    Swal.fire({
+      text: `Too many roles, remove ${a-b} roles`,
+      confirmButtonText: "OK"
+    })
+    return false
+  } else {
+    return true
+  }
+}
+
 async function startGame(): Promise<void> {
-  if (createRoom.choosenRoles.length !== ws.players.length) {
-    alert('Not enough roles as players')
+  let count = createRoom.choosenRoles.reduce((accumulator, val) => {
+    return accumulator + val.count;
+  }, 0);
+  if (!checkPlayerLength(count, ws.players.length) ) {
     return
   } else {
-    let roles = createRoom.choosenRoles.reduce((acc, role) => {
+    let roles = createRoom.choosenRoles.reduce((acc: string[], role: { count: number, name: string}) => {
       for (let i = 0; i < role.count; i++) {
         acc.push(role.name)
       }

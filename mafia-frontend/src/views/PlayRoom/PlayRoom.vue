@@ -20,7 +20,6 @@ if(ws.socket === null && route.params.id !== undefined) {
 }
 
 const currentDay = computed<number>(() => {
-  console.log("CurrentDay from the play room", playerRoom.currentScreen)
   return playerRoom.currentScreen
 })
 

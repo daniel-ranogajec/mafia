@@ -21,7 +21,7 @@ export const usePlayRoom = defineStore('playRoom', () => {
   const players = ref<ChoosenPlayer[]>([])
   const choosenPlayer = ref<ChoosenPlayer | null>(null)
 
-  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
+  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.RESULTS)
 
   const readyBool = ref<boolean>(false)
 
@@ -35,7 +35,6 @@ export const usePlayRoom = defineStore('playRoom', () => {
 
   function checkTheCurrentGame(players: ChoosenPlayer[]) {
     if(players.length === 1) {
-      console.log("Game is over")
       currentScreen.value = CurrentGameScreen.END
     }
   }
@@ -55,7 +54,6 @@ export const usePlayRoom = defineStore('playRoom', () => {
     else if(currentScreen.value === CurrentGameScreen.VOTING){
       currentScreen.value = CurrentGameScreen.NIGHT
     }
-    console.log("Current screen? ", currentScreen.value)
   }
 
   return { 

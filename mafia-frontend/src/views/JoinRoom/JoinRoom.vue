@@ -7,8 +7,6 @@ import { useWebsocket } from '@/stores/websocket';
 const router = useRouter()
 const ws = useWebsocket()
 
-console.log(ws)
-
 const gamePin = ref<string>("")
 
 function joinGame() {
