@@ -21,7 +21,7 @@ export const usePlayRoom = defineStore('playRoom', () => {
   const players = ref<ChoosenPlayer[]>([])
   const choosenPlayer = ref<ChoosenPlayer | null>(null)
 
-  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.RESULTS)
+  const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.DAY)
 
   const readyBool = ref<boolean>(false)
 

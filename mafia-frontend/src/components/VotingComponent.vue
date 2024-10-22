@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { usePlayRoom } from '@/stores/playRoom';
 import { useWebsocket } from '@/stores/websocket';
+import Swal from 'sweetalert2';
 
 const playerRoom = usePlayRoom()
 const ws = useWebsocket()
@@ -12,7 +13,7 @@ const playerChoice = ref<string | null>(null)
 const playerReady = ref<boolean>(false)
 
 function choosenPlayer(player: string) {
-  if(player !== ws.userName) {
+ if(player !== ws.userName) {
     playerChoice.value = player;
     playerRoom.choosenPlayer = {
       name: ws.userName,
@@ -24,20 +25,28 @@ function choosenPlayer(player: string) {
   }
 }
 
-console.log("playerVotedOut", ws.playerVoutedOut, ws.playerVoutedOut === "", playerReady.value)
-
 function confirmChoice() {
-  ws.socket?.send(JSON.stringify({message: "voting", player: playerChoice.value}))
-  playerReady.value = true;
+  if(playerChoice.value === null) {
+    Swal.fire({
+      text: "Choose a player!",
+      confirmButtonText: "OK"
+    }) 
+  } else {
+    ws.socket?.send(JSON.stringify({message: "voting", player: playerChoice.value}))
+    playerReady.value = true;
+  }
 }
 
-console.log(playerReady.value, ws.playerVoutedOut, !playerReady.value && ws.playerVoutedOut === null)
+const playerVotedOut = computed<string | null>(() => {
+  return ws.playerVoutedOut
+})
 
+//CHANGE SCREEN BUTTON NEEDED
 </script>
 
 <template>
   <main>
-    <div v-if="!playerReady && (ws.playerVoutedOut === '' || ws.playerVoutedOut === null)">
+    <div v-if="!playerReady && ws.playerVoutedOut === null">
       <div class="row card">
         Voting
       </div>
@@ -53,13 +62,13 @@ console.log(playerReady.value, ws.playerVoutedOut, !playerReady.value && ws.play
         <button @click="confirmChoice()" class="btn btn-danger">Confirm choice</button>
       </div>
     </div>
-    <div v-else-if="playerReady && (ws.playerVoutedOut === '' || ws.playerVoutedOut === null) ">
+    <div v-else-if="playerReady && ws.playerVoutedOut === null">
       <h1 class="card">Waiting for other players</h1>
     </div>
-    <div v-else-if="playerReady && ws.playerVoutedOut !== null && ws.playerVoutedOut !== ''">
+    <div v-else-if="playerReady && ws.playerVoutedOut !== null">
       <h1 class="card">Player vouted out: </h1>
       <div class="row card text-center mg-y-25">
-        {{ ws.playerVoutedOut }}
+        {{ playerVotedOut }}
       </div>
     </div>
   </main>

@@ -48,7 +48,6 @@ export const useWebsocket = defineStore('websocket', () => {
         allReady.value = false;
         try {
           const message = JSON.parse(event.data)
-          console.log("MESSAGE IN THE WEBSOCKET .ts ", message)
           if (message.status === 'user_connected' || message.status === 'connected') {
             if (message.players !== undefined) {
               players.value = message.players
@@ -65,12 +64,14 @@ export const useWebsocket = defineStore('websocket', () => {
             router.push({ path: `/PlayRoom/${roomId.value}` })
           }
           if (message.status === 'voted_out') {
+            if(message.player === "") { message.player = null }
             deadPlayers.value.push(message.player)
             playerVoutedOut.value = message.player
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
           }
           if (message.status === 'nothing') {
+            console.log(message.status)
             messages.value = message.message
             playRoom.nextCycle();
           }

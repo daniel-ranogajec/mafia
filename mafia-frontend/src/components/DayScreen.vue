@@ -8,12 +8,13 @@ const playRoom = usePlayRoom();
 
 function ready() {
   playRoom.readyBool = false;
+  clearInterval(countDownDate)
   ws.socket?.send(JSON.stringify({'message': 'ready'}))
 }
 
 //NEED TO CHANGE TO VOTING AGAIN
 
-const timer = ref<number>(5);
+const timer = ref<number>(1);
 
 let countDownDate = setInterval(() => {
   console.log(timer.value)
