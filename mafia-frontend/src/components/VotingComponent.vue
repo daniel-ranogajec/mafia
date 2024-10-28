@@ -4,10 +4,10 @@ import { usePlayRoom } from '@/stores/playRoom';
 import { useWebsocket } from '@/stores/websocket';
 import Swal from 'sweetalert2';
 
-const playerRoom = usePlayRoom()
+const playRoom = usePlayRoom()
 const ws = useWebsocket()
 
-playerRoom.initialize()
+playRoom.initialize()
 
 const playerChoice = ref<string | null>(null)
 const playerReady = ref<boolean>(false)
@@ -15,13 +15,13 @@ const playerReady = ref<boolean>(false)
 function choosenPlayer(player: string) {
  if(player !== ws.userName) {
     playerChoice.value = player;
-    playerRoom.choosenPlayer = {
+    playRoom.choosenPlayer = {
       name: ws.userName,
       choosenPlayer: player
     }
   } else {
     playerChoice.value = null;
-    playerRoom.choosenPlayer = null;
+    playRoom.choosenPlayer = null;
   }
 }
 
@@ -41,7 +41,10 @@ const playerVotedOut = computed<string | null>(() => {
   return ws.playerVoutedOut
 })
 
-//CHANGE SCREEN BUTTON NEEDED
+function ready() {
+  playRoom.readyBool = true;
+  ws.socket?.send(JSON.stringify({ 'message': 'ready' }))
+}
 </script>
 
 <template>
@@ -53,7 +56,7 @@ const playerVotedOut = computed<string | null>(() => {
       <div class="row card mg-y-15">
         Vote to kill a player:
       </div>
-      <div v-for="player in playerRoom.players" class="row card text-center mg-y-25" :class="[
+      <div v-for="player in playRoom.players" class="row card text-center mg-y-25" :class="[
         player.name === playerChoice ? 'choosenPlayer': ''
       ]" v-bind:key="player.name">
         <div @click="choosenPlayer(player.name)">{{ player.name }}</div>
@@ -69,6 +72,9 @@ const playerVotedOut = computed<string | null>(() => {
       <h1 class="card">Player vouted out: </h1>
       <div class="row card text-center mg-y-25">
         {{ playerVotedOut }}
+      </div>
+      <div class="row card mg-y-15">
+        <button @click="ready()" class="btn btn-danger">I'm ready</button>
       </div>
     </div>
   </main>

@@ -12,7 +12,6 @@ const createRoom = useCreateRoom()
 const ws = useWebsocket()
 
 function checkPlayerLength(a: number, b: number): boolean {
-  console.log(a, b)
   if (a < b) {
     Swal.fire({
       text: "Not enough roles as players",

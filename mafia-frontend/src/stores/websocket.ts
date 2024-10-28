@@ -64,14 +64,13 @@ export const useWebsocket = defineStore('websocket', () => {
             router.push({ path: `/PlayRoom/${roomId.value}` })
           }
           if (message.status === 'voted_out') {
-            if(message.player === "") { message.player = null }
             deadPlayers.value.push(message.player)
             playerVoutedOut.value = message.player
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
+            playRoom.nextCycle();
           }
           if (message.status === 'nothing') {
-            console.log(message.status)
             messages.value = message.message
             playRoom.nextCycle();
           }

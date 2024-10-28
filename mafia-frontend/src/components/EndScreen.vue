@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { usePlayRoom } from '@/stores/playRoom'
 import { useWebsocket } from '@/stores/websocket';
+import { computed } from 'vue';
 
 const playerRoom = usePlayRoom();
 const ws = useWebsocket();
 
+const endGameText = computed<any>(() => {
+  console.log(playerRoom, ws)
+  return {
+    ws, playerRoom
+  }
+})
+
+console.log("LEgit came here")
 </script>
 <template>
   <main>

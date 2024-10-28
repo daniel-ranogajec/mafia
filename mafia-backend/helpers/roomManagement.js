@@ -142,7 +142,6 @@ class RoomManager {
     let clients = this.rooms.get(roomId);
     let clientsArray = Array.from(clients.values());
     let aliveVotes = clientsArray.filter((e) => e.alive);
-
     if (this.count.get(roomId) >= aliveVotes.length) {
       this.resolveAction(roomId, phase);
     }
@@ -162,6 +161,8 @@ class RoomManager {
           Math.random() * playersWithMaxCount.length
         );
         playerToKill = playersWithMaxCount[randomIndex].player;
+      } else {
+        playerToKill = "null"
       }
     } else if (phase === "night") {
       let clients = this.rooms.get(roomId);
@@ -223,7 +224,6 @@ class RoomManager {
         let player = clients.get(playerToKill);
   
         player.alive = false;
-  
         this.rooms.get(roomId).forEach((client, userID) => {
           client.socket.send(
             JSON.stringify({ status: "voted_out", player: playerToKill })
@@ -257,7 +257,7 @@ class RoomManager {
       }
     } else {
       this.rooms.get(roomId).forEach((client, userID) => {
-        client.socket.send(JSON.stringify({ status: "voted_out", player: "" }));
+        client.socket.send(JSON.stringify({ status: "voted_out", player: null }));
       });
     }
     let voting = this.votes.get(roomId);
