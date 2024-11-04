@@ -1,46 +1,48 @@
 <script setup lang="ts">
+import router from '@/router';
 import { usePlayRoom } from '@/stores/playRoom'
 import { useWebsocket } from '@/stores/websocket';
-import { computed } from 'vue';
+import axios from 'axios';
 
 const playerRoom = usePlayRoom();
 const ws = useWebsocket();
 
-const endGameText = computed<any>(() => {
-  console.log(playerRoom, ws)
-  return {
-    ws, playerRoom
+function goToLobby() {
+  if (ws.isAdmin) {
+    router.push({
+      path: `/CreateRoom/${ws.roomId}`
+    })
+  } else {
+    router.push({
+      path: `/LobbyRoom/${ws.roomId}`
+    })
   }
-})
-
-console.log("LEgit came here")
+}
 </script>
 <template>
-  <main>
-    <div class="row card mg-y-15">Game ended</div>
-    <div class="row card mg-y-15">
-      <div class="row">
-        <div class="col col-8">Alive players:</div>
-        <div class="col" v-for="alive in playerRoom.players" v-bind:key="alive.name">
-          {{ alive.name }}
-        </div>
+  <div class="row card mg-y-15">Game ended</div>
+  <div class="row card mg-y-15">
+    <div class="row">
+      <div class="col col-8">Alive players:</div>
+      <div class="col" v-for="alive in playerRoom.players" v-bind:key="alive.name">
+        {{ alive.name }}
       </div>
     </div>
-    <div class="row card mg-y-15">
-      <div class="row">
-        <div class="col col-8">Dead players:</div>
-          <div class="col" v-for="dead in ws.deadPlayers" v-bind:key="dead.name">
-            {{ dead }}
-          </div>
+  </div>
+  <div class="row card mg-y-15">
+    <div class="row">
+      <div class="col col-8">Dead players:</div>
+      <div class="col" v-for="dead in ws.deadPlayers" v-bind:key="dead">
+        <span v-if="dead !== null">{{ dead }}</span>
       </div>
     </div>
-    <div class="row card mg-y-15">
-      <h1>{{ ws.endMesagge }}</h1>      
-    </div>
-    <div class="row card mg-y-15">
-      <button class="btn btn-warning" >Play again</button>      
-    </div>
-  </main>
+  </div>
+  <div class="row card mg-y-15">
+    <h1>{{ ws.endMesagge }}</h1>
+  </div>
+  <div class="row card mg-y-15">
+    <button class="btn btn-warning" @click="goToLobby">Play again</button>
+  </div>
 </template>
 <style>
 .mg-y-15 {

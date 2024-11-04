@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { useWebsocket } from '@/stores/websocket';
-import { computed } from 'vue';
+import { useWebsocket } from '@/stores/websocket'
+import { computed } from 'vue'
 
 const ws = useWebsocket()
 
+console.log(ws)
 </script>
 
 <template>
   <main>
     <div class="container" v-for="player in ws.players" v-bind:key="player">
-        <div class="row center card borderRole m-y-15">
-            <div class="col">{{ player }}</div>
-        </div>
+      <div class="row center card borderRole m-y-15">
+        <div class="col">{{ player }}</div>
+      </div>
     </div>
   </main>
 </template>

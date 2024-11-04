@@ -11,8 +11,8 @@ export enum CurrentGameScreen {
 }
 
 export interface ChoosenPlayer {
-  name: string,
-  choosenPlayer?: string,
+  name: string
+  choosenPlayer?: string
 }
 
 export const usePlayRoom = defineStore('playRoom', () => {
@@ -34,8 +34,8 @@ export const usePlayRoom = defineStore('playRoom', () => {
     checkTheCurrentGame(players.value)
   }
 
-  function checkTheCurrentGame(players: ChoosenPlayer[]) {
-    if(players.length === 1) {
+  async function checkTheCurrentGame(players: ChoosenPlayer[]) {
+    if (players.length === 1) {
       currentScreen.value = CurrentGameScreen.END
     }
   }
@@ -43,39 +43,36 @@ export const usePlayRoom = defineStore('playRoom', () => {
   function nextCycle() {
     checkTheCurrentGame(players.value)
 
-    if(currentScreen.value !== CurrentGameScreen.END && players.value.length !== 1){
-      if(currentScreen.value === CurrentGameScreen.NIGHT) {
+    if (currentScreen.value !== CurrentGameScreen.END) {
+      if (currentScreen.value === CurrentGameScreen.NIGHT) {
         currentScreen.value = CurrentGameScreen.RESULTS
         screenBefore.value = CurrentGameScreen.NIGHT
-      }
-      else if(currentScreen.value === CurrentGameScreen.RESULTS) {
-        readyBool.value = true;
-        if(screenBefore.value === CurrentGameScreen.NIGHT) {
+      } else if (currentScreen.value === CurrentGameScreen.RESULTS) {
+        readyBool.value = true
+        if (screenBefore.value === CurrentGameScreen.NIGHT) {
           currentScreen.value = CurrentGameScreen.DAY
           screenBefore.value = CurrentGameScreen.RESULTS
-        } else if(screenBefore.value === CurrentGameScreen.VOTING) {
+        } else if (screenBefore.value === CurrentGameScreen.VOTING) {
           currentScreen.value = CurrentGameScreen.NIGHT
           screenBefore.value = CurrentGameScreen.RESULTS
         }
-      }
-      else if(currentScreen.value === CurrentGameScreen.DAY) {
-        readyBool.value = false;
+      } else if (currentScreen.value === CurrentGameScreen.DAY) {
+        readyBool.value = false
         currentScreen.value = CurrentGameScreen.VOTING
         screenBefore.value = CurrentGameScreen.DAY
-      }
-      else if(currentScreen.value === CurrentGameScreen.VOTING) {
+      } else if (currentScreen.value === CurrentGameScreen.VOTING) {
         currentScreen.value = CurrentGameScreen.RESULTS
         screenBefore.value = CurrentGameScreen.VOTING
       }
     }
   }
 
-  return { 
+  return {
     currentScreen,
     nextCycle,
     players,
     choosenPlayer,
     initialize,
-    readyBool,
+    readyBool
   }
 })

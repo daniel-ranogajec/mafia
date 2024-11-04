@@ -6,11 +6,11 @@ import { usePlayRoom } from './playRoom'
 export const useWebsocket = defineStore('websocket', () => {
   const router = useRouter()
   const messages = ref<string>('')
-  const playRoom = usePlayRoom();
+  const playRoom = usePlayRoom()
 
   const uname = localStorage.getItem('username')
   const userName = ref<string>(uname ? uname : '')
-  const role = ref<string>("")
+  const role = ref<string>('')
   const roomId = ref<string>('')
   const playerVoutedOut = ref<string | null>(null)
   const allReady = ref<boolean>(false)
@@ -19,12 +19,14 @@ export const useWebsocket = defineStore('websocket', () => {
   const players = ref<string[]>([])
   const deadPlayers = ref<string[]>([])
 
+  const isAdmin = ref<boolean>(false)
+
   const socket = ref<WebSocket | null>(null)
 
   function joinNewSocket() {
-    playerVoutedOut.value = null;
-    endMesagge.value = '';
-    messages.value = '';
+    playerVoutedOut.value = null
+    endMesagge.value = ''
+    messages.value = ''
 
     if (!socket.value) {
       if (userName.value == '') {
@@ -37,7 +39,7 @@ export const useWebsocket = defineStore('websocket', () => {
 
       socket.value.onopen = () => {
         console.log('WebSocket connection established')
-        socket.value?.send(JSON.stringify({'message': 'refresh'}))
+        socket.value?.send(JSON.stringify({ message: 'refresh' }))
       }
 
       socket.value.onerror = (error) => {
@@ -45,7 +47,7 @@ export const useWebsocket = defineStore('websocket', () => {
       }
 
       socket.value.onmessage = (event) => {
-        allReady.value = false;
+        allReady.value = false
         try {
           const message = JSON.parse(event.data)
           if (message.status === 'user_connected' || message.status === 'connected') {
@@ -57,25 +59,27 @@ export const useWebsocket = defineStore('websocket', () => {
           } else if (message.status === 'user_disconnected') {
             removePlayer(message.user)
           } else if (message.status === 'all_ready') {
-            playRoom.nextCycle();
+            playRoom.nextCycle()
           }
           if (message.status === 'role') {
             role.value = message.role
             router.push({ path: `/PlayRoom/${roomId.value}` })
           }
           if (message.status === 'voted_out') {
-            deadPlayers.value.push(message.player)
+            if (message.player !== null) {
+              deadPlayers.value.push(message.player)
+            }
             playerVoutedOut.value = message.player
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
-            playRoom.nextCycle();
+            playRoom.nextCycle()
           }
           if (message.status === 'nothing') {
             messages.value = message.message
-            playRoom.nextCycle();
+            playRoom.nextCycle()
           }
           if (message.status === 'game_over') {
-            if(message.message === 'mafia_wins') {
+            if (message.message === 'mafia_wins') {
               endMesagge.value = 'Mafia won!'
             } else {
               endMesagge.value = 'Villagers won!'
@@ -111,6 +115,7 @@ export const useWebsocket = defineStore('websocket', () => {
     allReady,
     endMesagge,
     deadPlayers,
-    role
+    role,
+    isAdmin
   }
 })

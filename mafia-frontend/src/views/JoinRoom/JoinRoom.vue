@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios';
-import { useWebsocket } from '@/stores/websocket';
+import axios from 'axios'
+import { useWebsocket } from '@/stores/websocket'
 
 const router = useRouter()
 const ws = useWebsocket()
 
-const gamePin = ref<string>("")
+const gamePin = ref<string>('')
 
 function joinGame() {
-  axios.post(`${import.meta.env.VITE_API_BASE_URL}/checkRoom`, { roomId: gamePin.value, username: ws.userName }).then(res => {
-    router.push({
-      path: `/LobbyRoom/${res.data.roomId}`}
-    )
-  }).catch(err => new Error(err))
+  ws.isAdmin = false
+  axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}/checkRoom`, {
+      roomId: gamePin.value,
+      username: ws.userName
+    })
+    .then((res) => {
+      router.push({
+        path: `/LobbyRoom/${res.data.roomId}`
+      })
+    })
+    .catch((err) => new Error(err))
 }
 </script>
 

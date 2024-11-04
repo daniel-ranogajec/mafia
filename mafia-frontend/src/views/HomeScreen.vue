@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import axios from 'axios';
+import axios from 'axios'
 
-import {useCreateRoom} from '@/stores/createRoom';
-import {useRouter} from 'vue-router';
-import {useWebsocket} from '@/stores/websocket';
+import { useCreateRoom } from '@/stores/createRoom'
+import { useRouter } from 'vue-router'
+import { useWebsocket } from '@/stores/websocket'
 
-const createRoom = useCreateRoom();
+const createRoom = useCreateRoom()
 const router = useRouter()
 const ws = useWebsocket()
 
 function callCreateRoom() {
-  axios.get(`${import.meta.env.VITE_API_BASE_URL}/createRoom`).then(res => {
-    if (res.data.roomId !== undefined) {
-      createRoom.room = res.data;
-      router.push({
-            path: `/CreateRoom/${res.data.roomId}`
-          }
-      )
-    }
-  }).catch(err => new Error(err))
-
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/createRoom`)
+    .then((res) => {
+      if (res.data.roomId !== undefined) {
+        createRoom.room = res.data
+        router.push({
+          path: `/CreateRoom/${res.data.roomId}`
+        })
+      }
+    })
+    .catch((err) => new Error(err))
 }
 
 function joinRoom() {
-  router.push({path: `/JoinRoom`})
+  router.push({ path: `/JoinRoom` })
 }
 </script>
 
@@ -33,11 +34,18 @@ function joinRoom() {
     <div class="container">
       <div class="row m-3 mb-3">
         <div class="subHeader">Your display name</div>
-        <input type="text" v-model="ws.userName" class="form-control" placeholder="Enter your name"/>
+        <input
+          type="text"
+          v-model="ws.userName"
+          class="form-control"
+          placeholder="Enter your name"
+        />
       </div>
 
       <div class="row m-3 mt-0">
-        <button type="button" @click="callCreateRoom" class="btn btn-danger btn-block">Create room</button>
+        <button type="button" @click="callCreateRoom" class="btn btn-danger btn-block">
+          Create room
+        </button>
       </div>
 
       <div class="row m-3 mt-0">
