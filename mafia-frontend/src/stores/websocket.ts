@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 import { usePlayRoom } from './playRoom'
+import Swal from 'sweetalert2'
 
 export const useWebsocket = defineStore('websocket', () => {
   const router = useRouter()
@@ -60,12 +61,10 @@ export const useWebsocket = defineStore('websocket', () => {
             removePlayer(message.user)
           } else if (message.status === 'all_ready') {
             playRoom.nextCycle()
-          }
-          if (message.status === 'role') {
+          } else if (message.status === 'role') {
             role.value = message.role
             router.push({ path: `/PlayRoom/${roomId.value}` })
-          }
-          if (message.status === 'voted_out') {
+          } else if (message.status === 'voted_out') {
             if (message.player !== null) {
               deadPlayers.value.push(message.player)
             }
@@ -73,12 +72,15 @@ export const useWebsocket = defineStore('websocket', () => {
             const newArray = players.value.filter((val) => val !== message.player)
             players.value = newArray
             playRoom.nextCycle()
-          }
-          if (message.status === 'nothing') {
+          } else if (message.status === 'nothing') {
             messages.value = message.message
             playRoom.nextCycle()
-          }
-          if (message.status === 'game_over') {
+          } else if (message.status === "check_role") {
+            Swal.fire({
+              html: "You have checked that the player " + message.player + " is <br></br><h3>" + message.role + "</h3>",
+              confirmButtonText: "OK"
+            }) 
+          } else if (message.status === 'game_over') {
             if (message.message === 'mafia_wins') {
               endMesagge.value = 'Mafia won!'
             } else {

@@ -110,7 +110,7 @@ class RoomManager {
               JSON.stringify({
                 status: "check_role",
                 player: votedFor,
-                role: clients.get(votedFor).role,
+                role: role.toLowerCase() === "mafia" ? "Mafia" : "Not Mafia",
               })
             );
           } else {
