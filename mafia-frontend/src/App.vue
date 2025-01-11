@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -10,9 +10,11 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-@import "@/assets/main.css";
+@import '@/assets/main.css';
 
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   height: 100%;
   overflow: hidden;

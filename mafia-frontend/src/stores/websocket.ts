@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import Swal from 'sweetalert2'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlayRoom } from './playRoom'
-import Swal from 'sweetalert2'
 
 export const useWebsocket = defineStore('websocket', () => {
   const router = useRouter()
@@ -75,11 +75,16 @@ export const useWebsocket = defineStore('websocket', () => {
           } else if (message.status === 'nothing') {
             messages.value = message.message
             playRoom.nextCycle()
-          } else if (message.status === "check_role") {
+          } else if (message.status === 'check_role') {
             Swal.fire({
-              html: "You have checked that the player " + message.player + " is <br></br><h3>" + message.role + "</h3>",
-              confirmButtonText: "OK"
-            }) 
+              html:
+                'You have checked that the player ' +
+                message.player +
+                ' is <br></br><h3>' +
+                message.role +
+                '</h3>',
+              confirmButtonText: 'OK'
+            })
           } else if (message.status === 'game_over') {
             if (message.message === 'mafia_wins') {
               endMesagge.value = 'Mafia won!'
