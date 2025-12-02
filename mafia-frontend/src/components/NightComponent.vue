@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { ref, Transition } from 'vue'
+import { ref, onMounted } from 'vue'
 import { usePlayRoom } from '@/stores/playRoom'
 import { useWebsocket } from '@/stores/websocket'
+import { useRandomArray } from '@/stores/randomArray'
 
 const playerRoom = usePlayRoom()
 const ws = useWebsocket()
+const randomArray = useRandomArray()
 
 playerRoom.initialize()
 
 const playerChoice = ref<string | null>(null)
 const playerReady = ref<boolean>(false)
 
+onMounted(() => {
+  randomArray.randomNumberGeneratorToSolve()
+})
+
 function choosenPlayer(player: string) {
+  console.log(ws.role)
+
   if (player !== ws.userName) {
     playerChoice.value = player
     playerRoom.choosenPlayer = {
@@ -25,6 +33,7 @@ function choosenPlayer(player: string) {
 }
 
 function confirmChoice() {
+  console.log('Pa dobar je odabro')
   ws.socket?.send(JSON.stringify({ message: 'night', player: playerChoice.value }))
   playerReady.value = true
 }
@@ -32,8 +41,29 @@ function confirmChoice() {
 
 <template>
   <main>
-    <div v-if="!playerReady">
+    <div v-if="ws.role === 'Villager' && playerReady === false">
       <div class="row card">Night</div>
+      <div class="row card mg-y-15">You are a villager</div>
+      <div class="row card mg-y-15">
+        The number to solve is: {{ randomArray.randomNumberToSolve }}
+      </div>
+      <div
+        v-for="(randomAnswer, index) in randomArray.randomAnswersArray"
+        :key="index"
+        class="row card mg-y-15"
+      >
+        <button
+          class="btn"
+          :class="'btn-secondary'"
+          @click="randomAnswer.correct ? confirmChoice() : null"
+        >
+          {{ randomAnswer.text }}
+        </button>
+      </div>
+    </div>
+    <div v-else-if="ws.role !== 'Villager' && playerReady === false">
+      <div class="row card">Night</div>
+      <div class="row card mg-y-15">You are {{ ws.role }}</div>
       <div class="row card mg-y-15">Choose a player:</div>
       <div
         v-for="player in playerRoom.players"

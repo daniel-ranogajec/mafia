@@ -102,15 +102,20 @@ class RoomManager {
     } else if (phase === "night") {
       let clients = this.rooms.get(roomId);
       let client = clients.get(player);
-      if (client.role.toLowerCase() === "detective") {
-        if(clients.get(votedFor) !== undefined) {
-          let role = clients.get(votedFor).role;
-          if (role !== undefined) {
+      const role = client.role.toLowerCase();
+
+      // Handle villagers - they don't vote, just mark as ready
+      if (role === "villager" || votedFor === null || votedFor === "villager") {
+        client.voted_for = null;
+      } else if (role === "detective") {
+        if (clients.get(votedFor) !== undefined) {
+          let targetRole = clients.get(votedFor).role;
+          if (targetRole !== undefined) {
             client.socket.send(
               JSON.stringify({
                 status: "check_role",
                 player: votedFor,
-                role: role.toLowerCase() === "mafia" ? "Mafia" : "Not Mafia",
+                role: targetRole.toLowerCase() === "mafia" ? "Mafia" : "Not Mafia",
               })
             );
           } else {
@@ -123,8 +128,11 @@ class RoomManager {
             JSON.stringify({ error: "player did not look" })
           );
         }
+        client.voted_for = votedFor;
+      } else {
+        // Mafia, Doctor, or other roles that vote
+        client.voted_for = votedFor;
       }
-      client.voted_for = votedFor;
     } else if (phase === "ready") {
       let votes = this.votes.get(roomId);
       if (votes.includes(player)) {
@@ -169,43 +177,49 @@ class RoomManager {
       let clientsArray = Array.from(clients.values());
       let mafiaVotes = clientsArray
         .filter((e) => {
-          return e.role.toLowerCase() === "mafia";
+          return e.role.toLowerCase() === "mafia" && e.voted_for !== null && e.voted_for !== undefined;
         })
         .map((e) => e.voted_for);
 
       let count = {};
 
       mafiaVotes.forEach((player) => {
-        if (count[player]) {
-          count[player]++;
-        } else {
-          count[player] = 1;
+        if (player !== null && player !== undefined) {
+          if (count[player]) {
+            count[player]++;
+          } else {
+            count[player] = 1;
+          }
         }
       });
 
-      let maxCount = Math.max(...Object.values(count));
-      let playersWithMaxCount = Object.keys(count).filter(
-        (name) => count[name] === maxCount
-      );
+      // Only resolve mafia votes if there are any
+      if (Object.keys(count).length > 0) {
+        let maxCount = Math.max(...Object.values(count));
+        let playersWithMaxCount = Object.keys(count).filter(
+          (name) => count[name] === maxCount
+        );
 
-      let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length);
-
-      playerToKill = playersWithMaxCount[randomIndex];
-
-      if (playerToKill === null) {
+        let randomIndex = Math.floor(Math.random() * playersWithMaxCount.length);
+        playerToKill = playersWithMaxCount[randomIndex];
+      } else {
+        // No mafia votes, no one gets killed
         playerToKill = undefined;
+        this.rooms.get(roomId).forEach((client, userID) => {
+          client.socket.send(
+            JSON.stringify({ status: "nothing", message: "No one voted out" })
+          );
+        });
       }
 
       let doctorVotes = clientsArray
         .filter((e) => {
-          return e.role.toLowerCase() === "doctor";
+          return e.role.toLowerCase() === "doctor" && e.voted_for !== null && e.voted_for !== undefined;
         })
         .map((e) => e.voted_for);
 
-      if (doctorVotes.length > 0) {
-        if (doctorVotes[0] === playerToKill) {
-          playerToKill = undefined;
-        }
+      if (doctorVotes.length > 0 && doctorVotes[0] === playerToKill) {
+        playerToKill = undefined;
       }
     } else if (phase === "ready") {
       this.rooms.get(roomId).forEach((client, userID) => {
@@ -222,21 +236,21 @@ class RoomManager {
       } else {
         let clients = this.rooms.get(roomId);
         let player = clients.get(playerToKill);
-  
+
         player.alive = false;
         this.rooms.get(roomId).forEach((client, userID) => {
           client.socket.send(
             JSON.stringify({ status: "voted_out", player: playerToKill })
           );
         });
-  
+
         let clientsArray = Array.from(clients.values());
         let mafia = clientsArray
           .filter((e) => {
             return e.role.toLowerCase() === "mafia";
           })
           .map((e) => e.voted_for);
-  
+
         if (mafia.length == 0) {
           this.rooms.get(roomId).forEach((client, userID) => {
             client.socket.send(
@@ -244,9 +258,9 @@ class RoomManager {
             );
           });
         }
-  
+
         let aliveVotes = clientsArray.filter((e) => e.alive);
-  
+
         if (mafia.length >= aliveVotes.length - mafia.length) {
           this.rooms.get(roomId).forEach((client, userID) => {
             client.socket.send(

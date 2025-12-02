@@ -22,48 +22,61 @@ export const usePlayRoom = defineStore('playRoom', () => {
   const choosenPlayer = ref<ChoosenPlayer | null>(null)
 
   const currentScreen = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
-  const screenBefore = ref<CurrentGameScreen>(CurrentGameScreen.RESULTS)
+  const screenBefore = ref<CurrentGameScreen>(CurrentGameScreen.NIGHT)
 
   const readyBool = ref<boolean>(false)
 
   function initialize() {
-    players.value = []
-    ws.players.map((val) => {
-      players.value.push({ name: val })
-    })
-    checkTheCurrentGame(players.value)
+    // Sync players in the play room store with the latest websocket players
+    players.value = ws.players.map((val) => ({ name: val }))
+    checkTheCurrentGame()
   }
 
-  async function checkTheCurrentGame(players: ChoosenPlayer[]) {
-    if (players.length === 1) {
+  function checkTheCurrentGame() {
+    // Use websocket players as single source of truth for game state
+    if (ws.players.length === 1) {
       currentScreen.value = CurrentGameScreen.END
     }
   }
 
   function nextCycle() {
-    checkTheCurrentGame(players.value)
+    checkTheCurrentGame()
 
-    if (currentScreen.value !== CurrentGameScreen.END) {
-      if (currentScreen.value === CurrentGameScreen.NIGHT) {
+    if (currentScreen.value === CurrentGameScreen.END) {
+      return
+    }
+
+    // Simple cycle: NIGHT -> RESULTS -> DAY -> VOTING -> RESULTS -> NIGHT (loop)
+    switch (currentScreen.value) {
+      case CurrentGameScreen.NIGHT:
         currentScreen.value = CurrentGameScreen.RESULTS
         screenBefore.value = CurrentGameScreen.NIGHT
-      } else if (currentScreen.value === CurrentGameScreen.RESULTS) {
-        readyBool.value = true
+        readyBool.value = false
+        break
+
+      case CurrentGameScreen.RESULTS:
         if (screenBefore.value === CurrentGameScreen.NIGHT) {
           currentScreen.value = CurrentGameScreen.DAY
           screenBefore.value = CurrentGameScreen.RESULTS
+          readyBool.value = false
         } else if (screenBefore.value === CurrentGameScreen.VOTING) {
           currentScreen.value = CurrentGameScreen.NIGHT
           screenBefore.value = CurrentGameScreen.RESULTS
+          readyBool.value = false
         }
-      } else if (currentScreen.value === CurrentGameScreen.DAY) {
-        readyBool.value = false
+        break
+
+      case CurrentGameScreen.DAY:
         currentScreen.value = CurrentGameScreen.VOTING
         screenBefore.value = CurrentGameScreen.DAY
-      } else if (currentScreen.value === CurrentGameScreen.VOTING) {
+        readyBool.value = false
+        break
+
+      case CurrentGameScreen.VOTING:
         currentScreen.value = CurrentGameScreen.RESULTS
         screenBefore.value = CurrentGameScreen.VOTING
-      }
+        readyBool.value = false
+        break
     }
   }
 

@@ -12,6 +12,7 @@ function ready() {
 }
 
 const currentMessage = computed<string>(() => {
+  console.log(ws.messages)
   if (ws.playerVoutedOut !== null && ws.playerVoutedOut !== '') {
     return `Player killed: ${ws.playerVoutedOut}`
   } else {
@@ -36,7 +37,7 @@ const currentMessage = computed<string>(() => {
     <div v-else>
       <div class="card row text-center mg-y-25">
         <Transition name="ready">
-          <h1 v-if="playRoom.readyBool" class="card">Waiting for other players</h1>
+          <h1 v-if="playRoom.readyBool" class="card">Waiting for other players in result</h1>
         </Transition>
       </div>
     </div>
